@@ -1,0 +1,347 @@
+import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import HeroSection from "@/components/HeroSection";
+import { openWhatsApp } from "@/lib/whatsapp";
+import { Link } from "react-router-dom";
+
+const categories = [
+  { name: "Ferro & Aço", href: "/catalogo#ferro-aco", icon: "🔧" },
+  { name: "EPIs", href: "/catalogo#epis", icon: "🦺" },
+  { name: "Consumíveis Técnicos", href: "/catalogo#consumiveis-tecnicos", icon: "⚙️" },
+  { name: "Insumos Industriais", href: "/catalogo#insumos-industriais", icon: "🏭" },
+  { name: "Ferramentas Elétricas", href: "/catalogo#ferramentas-eletricas", icon: "⚡" },
+  { name: "Ferramentas à Bateria", href: "/catalogo#ferramentas-bateria", icon: "🔋" },
+  { name: "Ferramentas Manuais", href: "/catalogo#ferramentas-manuais", icon: "🔨" },
+  { name: "Solda & Acessórios", href: "/catalogo#solda-acessorios", icon: "🔥" }
+];
+
+const problems = [
+  { icon: CheckCircle, title: "Ordem errada", description: "Não ter que refazer pedidos por divergências ou falta de clareza" },
+  { icon: Truck, title: "Entrega cruzada", description: "Receber o produto certo, no local certo, no prazo combinado" },
+  { icon: Clock, title: "Demora sem retorno", description: "Ter transparência total sobre prazos e status do pedido" },
+  { icon: Shield, title: "Falta de qualidade", description: "Produtos certificados e de marcas reconhecidas no mercado" }
+];
+
+const solutions = [
+  { icon: CheckCircle, title: "Nota conferida", description: "Cada item é verificado antes da expedição" },
+  { icon: Settings, title: "Personalização", description: "Corte e preparação conforme suas especificações" },
+  { icon: Truck, title: "Logística própria", description: "Frota própria garante prazos e cuidado no transporte" },
+  { icon: Shield, title: "Pós-expedição", description: "Acompanhamento até a entrega e confirmação" }
+];
+
+const testimonials = [
+  {
+    quote: "Trabalhar com o Grupo Soares transformou nossa operação. Nunca mais tivemos problemas com prazos ou qualidade.",
+    author: "Carlos Silva",
+    company: "Metalúrgica Industrial",
+    avatar: "CS"
+  },
+  {
+    quote: "A logística própria faz toda a diferença. Sabemos exatamente quando nossos materiais vão chegar.",
+    author: "Maria Santos",
+    company: "Construtora Horizonte",
+    avatar: "MS"
+  },
+  {
+    quote: "O atendimento técnico é excepcional. Sempre encontram a solução certa para nossos desafios.",
+    author: "João Pereira",
+    company: "Indústria Brasileira",
+    avatar: "JP"
+  }
+];
+
+const scrollToCategories = () => {
+  document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+export default function Home() {
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <HeroSection
+        title="Seu fornecedor industrial, rápido e sem complicações"
+        subtitle="Ferro & Aço, ferramentas, EPIs e insumos industriais. Logística própria, atendimento 24h e mais de 20 anos de experiência."
+        primaryCTA="Chamar no WhatsApp"
+        secondaryCTA="Ver categorias"
+        onSecondaryCTA={scrollToCategories}
+      />
+
+      {/* O que não pode acontecer */}
+      <section className="py-20 bg-background">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              O que não pode acontecer
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Sabemos os problemas que você não quer ter. Por isso criamos processos para evitá-los.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {problems.map((problem, index) => (
+              <Card key={index} className="p-6 text-center hover-lift border-none shadow-card">
+                <CardContent className="p-0">
+                  <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <problem.icon className="w-8 h-8 text-red-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">{problem.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{problem.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Muitas soluções em um lugar só */}
+      <section className="py-20 bg-gradient-subtle">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Muitas soluções em um lugar só
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Mais que um fornecedor, somos seu parceiro para resolver desafios industriais.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {solutions.map((solution, index) => (
+              <Card key={index} className="p-6 text-center hover-lift border-none shadow-card bg-white">
+                <CardContent className="p-0">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <solution.icon className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">{solution.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{solution.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Encontre rápido o que precisa */}
+      <section id="categories" className="py-20 bg-background">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Encontre rápido o que precisa
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Navegue pelas nossas categorias ou fale direto com nossos especialistas.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
+              <Link
+                key={index}
+                to={category.href}
+                className="group"
+              >
+                <Card className="p-6 text-center hover-lift border-none shadow-card bg-white group-hover:shadow-card-hover transition-all duration-300">
+                  <CardContent className="p-0">
+                    <div className="text-4xl mb-4">{category.icon}</div>
+                    <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
+                      {category.name}
+                    </h3>
+                    <div className="flex items-center justify-center text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-sm">Ver produtos</span>
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => openWhatsApp({ context: "Gostaria de falar com um especialista sobre produtos" })}
+              variant="hero"
+              size="lg"
+            >
+              Falar com especialista
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Logística própria */}
+      <section className="py-20 bg-gradient-hero text-white">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+                Logística própria, prazos controlados
+              </h2>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                  <span>Janelas de entrega de 2 horas</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                  <span>Rastreamento em tempo real</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                  <span>Comprovante digital de entrega</span>
+                </div>
+              </div>
+              <Link to="/frota-logistica">
+                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:border-white/50">
+                  Conheça a logística
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
+            <div className="relative">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                <div className="aspect-video bg-white/20 rounded-xl flex items-center justify-center">
+                  <Truck className="w-16 h-16 text-white/60" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mensagem do fundador */}
+      <section className="py-20 bg-secondary">
+        <div className="container-custom">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="mb-8">
+              <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6">
+                <span className="text-white font-bold text-2xl">ES</span>
+              </div>
+              <blockquote className="text-2xl lg:text-3xl font-medium text-foreground mb-6 italic">
+                "Construímos o Grupo Soares com a certeza de que cada cliente merece um atendimento excepcional. 
+                Não é apenas sobre vender produtos, é sobre resolver problemas e criar parcerias duradouras."
+              </blockquote>
+              <cite className="text-lg text-muted-foreground">
+                <strong className="text-foreground">Edson Luiz Soares</strong><br />
+                Fundador e Diretor Técnico
+              </cite>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Depoimentos */}
+      <section className="py-20 bg-background">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Casos de sucesso e depoimentos
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Veja o que nossos clientes falam sobre nossa parceria
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="p-6 shadow-card hover-lift border-none">
+                <CardContent className="p-0">
+                  <div className="flex items-center mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                  <blockquote className="text-muted-foreground mb-6 italic">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold text-sm">{testimonial.avatar}</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-foreground">{testimonial.author}</div>
+                      <div className="text-sm text-muted-foreground">{testimonial.company}</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Estamos aqui */}
+      <section className="py-20 bg-gradient-subtle">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                Estamos aqui
+              </h2>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start space-x-3">
+                  <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <div className="text-muted-foreground">
+                    <div>Rua Industrial, 123 - Distrito Industrial</div>
+                    <div>São Paulo - SP, CEP 01234-567</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-6 h-6 text-primary flex-shrink-0" />
+                  <span className="text-muted-foreground">(11) 99988-7766</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  onClick={() => window.open('https://maps.google.com/maps?q=Rua+Industrial+123+São+Paulo', '_blank')}
+                  variant="outline"
+                  size="lg"
+                >
+                  Traçar rota
+                </Button>
+                <Button
+                  onClick={() => openWhatsApp({ context: "Gostaria de visitar a loja" })}
+                  variant="whatsapp"
+                  size="lg"
+                >
+                  WhatsApp
+                </Button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-white rounded-2xl p-4 shadow-card">
+                <div className="aspect-video bg-secondary rounded-xl flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
+                    <MapPin className="w-12 h-12 mx-auto mb-2" />
+                    <p className="text-sm">Mapa em carregamento</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Final */}
+      <section className="py-20 bg-gradient-hero text-white">
+        <div className="container-custom text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+            Precisa de um orçamento ou quer tirar dúvidas?
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Fale com nossos especialistas via WhatsApp
+          </p>
+          <Button
+            onClick={() => openWhatsApp({ context: "Gostaria de solicitar um orçamento" })}
+            variant="accent"
+            size="xl"
+            className="font-semibold"
+          >
+            Chamar no WhatsApp
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+}
