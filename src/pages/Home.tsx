@@ -128,7 +128,7 @@ export default function Home() {
       </section>
 
       {/* Encontre rápido o que precisa */}
-      <section id="categories" className="py-20 bg-background">
+      <section id="categories" className="py-20 bg-gradient-subtle">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -146,7 +146,7 @@ export default function Home() {
                 to={category.href}
                 className="group"
               >
-                <Card className="p-6 text-center hover-lift border-none shadow-card bg-white group-hover:shadow-card-hover transition-all duration-300">
+                <Card className="p-6 text-center hover-lift border border-border/50 shadow-card bg-white group-hover:shadow-card-hover group-hover:border-primary/20 transition-all duration-300">
                   <CardContent className="p-0">
                     <div className="text-4xl mb-4">{category.icon}</div>
                     <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
