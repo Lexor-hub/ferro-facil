@@ -6,7 +6,9 @@ interface HeroSectionProps {
   title: string;
   subtitle: string;
   primaryCTA: string;
+  primaryVariant?: "default" | "accent" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "hero" | "whatsapp";
   secondaryCTA?: string;
+  secondaryVariant?: "default" | "accent" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "hero" | "whatsapp";
   onSecondaryCTA?: () => void;
   showVideo?: boolean;
 }
@@ -15,7 +17,9 @@ export default function HeroSection({
   title,
   subtitle,
   primaryCTA,
+  primaryVariant = "accent",
   secondaryCTA,
+  secondaryVariant = "outline",
   onSecondaryCTA,
   showVideo = false
 }: HeroSectionProps) {
@@ -46,8 +50,9 @@ export default function HeroSection({
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 onClick={() => openWhatsApp({ page: "hero" })}
+                variant={primaryVariant}
                 size="lg"
-                className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-4 text-lg group"
+                className="font-semibold px-8 py-4 text-lg group"
               >
                 {primaryCTA}
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -56,9 +61,9 @@ export default function HeroSection({
               {secondaryCTA && (
                 <Button
                   onClick={onSecondaryCTA}
-                  variant="outline"
+                  variant={secondaryVariant}
                   size="lg"
-                  className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 px-8 py-4 text-lg"
+                  className="px-8 py-4 text-lg"
                 >
                   {secondaryCTA}
                 </Button>
@@ -95,10 +100,10 @@ export default function HeroSection({
         </div>
       </div>
       
-      {/* Bottom Wave */}
+      {/* Bottom Wave - Improved curve */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg className="w-full h-12 lg:h-20" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 120L50 110C100 100 200 80 300 70C400 60 500 60 600 65C700 70 800 80 900 85C1000 90 1100 90 1150 90L1200 90V120H1150C1100 120 1000 120 900 120C800 120 700 120 600 120C500 120 400 120 300 120C200 120 100 120 50 120H0V120Z" fill="currentColor" className="text-background"/>
+        <svg className="w-full h-16 lg:h-24" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0 120L50 105C100 90 200 60 300 45C400 30 500 30 600 37.5C700 45 800 60 900 67.5C1000 75 1100 75 1150 75L1200 75V120H1150C1100 120 1000 120 900 120C800 120 700 120 600 120C500 120 400 120 300 120C200 120 100 120 50 120H0V120Z" fill="currentColor" className="text-background"/>
         </svg>
       </div>
     </section>
