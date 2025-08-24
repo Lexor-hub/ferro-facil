@@ -1,9 +1,12 @@
 import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import HeroSection from "@/components/HeroSection";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 const categories = [
   { name: "Ferro & Aço", href: "/catalogo#ferro-aco", icon: "🔧" },
@@ -57,7 +60,25 @@ const scrollToCategories = () => {
   document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
 };
 
+const fleetImages = [
+  {
+    src: "/placeholder.svg",
+    alt: "Frota de caminhões Grupo Soares estacionada no pátio da empresa"
+  },
+  {
+    src: "/placeholder.svg", 
+    alt: "Caminhões com identidade visual Soares para entrega de materiais industriais"
+  },
+  {
+    src: "/placeholder.svg",
+    alt: "Equipamentos de carga e frota logística da empresa Grupo Soares"
+  }
+];
+
 export default function Home() {
+  const plugin = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -210,11 +231,29 @@ export default function Home() {
               </Link>
             </div>
             <div className="relative">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-                <div className="aspect-video bg-white/20 rounded-xl flex items-center justify-center">
-                  <Truck className="w-16 h-16 text-white/60" />
-                </div>
-              </div>
+              <Carousel
+                plugins={[plugin.current]}
+                className="w-full max-w-lg mx-auto"
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.reset}
+              >
+                <CarouselContent>
+                  {fleetImages.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+                        <div className="aspect-video rounded-xl overflow-hidden">
+                          <img
+                            src={image.src}
+                            alt={image.alt}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
             </div>
           </div>
         </div>
