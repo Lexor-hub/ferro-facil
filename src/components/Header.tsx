@@ -40,8 +40,15 @@ export default function Header() {
       <nav className="container-custom h-header flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">GS</span>
+          <div className="w-10 h-10">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <circle cx="50" cy="50" r="50" fill="hsl(var(--primary))" />
+              <g fill="white" transform="translate(50,50)">
+                <path d="M-8,-20 L-8,-16 L-16,-16 L-16,-8 L-20,-8 L-20,8 L-16,8 L-16,16 L-8,16 L-8,20 L8,20 L8,16 L16,16 L16,8 L20,8 L20,-8 L16,-8 L16,-16 L8,-16 L8,-20 Z" />
+                <circle cx="0" cy="0" r="8" fill="hsl(var(--primary))" />
+                <circle cx="0" cy="0" r="4" fill="white" />
+              </g>
+            </svg>
           </div>
           <div>
             <div className="font-bold text-lg text-foreground">Grupo Soares</div>
