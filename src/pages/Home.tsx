@@ -1,4 +1,5 @@
 import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone } from "lucide-react";
+import MapboxMap from "@/components/MapboxMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -339,8 +340,8 @@ export default function Home() {
                 <div className="flex items-start space-x-3">
                   <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                   <div className="text-muted-foreground">
-                    <div>Rua Industrial, 123 - Distrito Industrial</div>
-                    <div>São Paulo - SP, CEP 01234-567</div>
+                    <div>R. Prof. Armando Lino Antunes, 251</div>
+                    <div>DISTRITO INDUSTRIAL, Mairinque - SP, CEP 18120-000</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -350,7 +351,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
-                  onClick={() => window.open('https://maps.google.com/maps?q=Rua+Industrial+123+São+Paulo', '_blank')}
+                  onClick={() => window.open('https://maps.google.com/maps?q=R.+Prof.+Armando+Lino+Antunes+251+Mairinque+SP', '_blank')}
                   variant="outline"
                   size="lg"
                 >
@@ -367,12 +368,7 @@ export default function Home() {
             </div>
             <div className="relative">
               <div className="bg-white rounded-2xl p-4 shadow-card">
-                <div className="aspect-video bg-secondary rounded-xl flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin className="w-12 h-12 mx-auto mb-2" />
-                    <p className="text-sm">Mapa em carregamento</p>
-                  </div>
-                </div>
+                <MapboxMap />
               </div>
             </div>
           </div>

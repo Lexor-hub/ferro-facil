@@ -234,8 +234,8 @@ export default function Fleet() {
                   <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                   <div className="text-muted-foreground">
                     <div className="font-medium text-foreground mb-1">Endereço para retirada:</div>
-                    <div>Rua Industrial, 123 - Distrito Industrial</div>
-                    <div>São Paulo - SP, CEP 01234-567</div>
+                    <div>R. Prof. Armando Lino Antunes, 251 - DISTRITO INDUSTRIAL</div>
+                    <div>Mairinque - SP, CEP 18120-000</div>
                   </div>
                 </div>
                 

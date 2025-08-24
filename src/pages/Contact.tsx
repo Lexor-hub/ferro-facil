@@ -38,8 +38,8 @@ const companies = [
   {
     name: "Edson Luiz Soares São Roque — ME",
     cnpj: "12.345.678/0001-90",
-    address: "Rua Industrial, 123 - Distrito Industrial - São Paulo/SP",
-    cep: "01234-567"
+    address: "R. Prof. Armando Lino Antunes, 251 - DISTRITO INDUSTRIAL - Mairinque/SP",
+    cep: "18120-000"
   },
   {
     name: "Luiz Bernardes Soares Ltda",
@@ -192,9 +192,9 @@ export default function Contact() {
                   <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                   <div className="text-muted-foreground">
                     <div className="font-medium text-foreground mb-1">Endereço principal:</div>
-                    <div>Rua Industrial, 123</div>
-                    <div>Distrito Industrial</div>
-                    <div>São Paulo - SP, CEP 01234-567</div>
+                    <div>R. Prof. Armando Lino Antunes, 251</div>
+                    <div>DISTRITO INDUSTRIAL</div>
+                    <div>Mairinque - SP, CEP 18120-000</div>
                   </div>
                 </div>
                 
@@ -211,7 +211,7 @@ export default function Contact() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
-                  onClick={() => window.open('https://maps.google.com/maps?q=Rua+Industrial+123+São+Paulo', '_blank')}
+                  onClick={() => window.open('https://maps.google.com/maps?q=R.+Prof.+Armando+Lino+Antunes+251+Mairinque+SP', '_blank')}
                   variant="outline"
                   size="lg"
                 >

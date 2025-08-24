@@ -76,9 +76,9 @@ export default function Footer() {
               <li className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                 <div className="text-white/80 text-sm">
-                  <div>Rua Industrial, 123</div>
-                  <div>Distrito Industrial</div>
-                  <div>São Paulo - SP, CEP 01234-567</div>
+                  <div>R. Prof. Armando Lino Antunes, 251</div>
+                  <div>DISTRITO INDUSTRIAL</div>
+                  <div>Mairinque - SP, CEP 18120-000</div>
                 </div>
               </li>
               <li className="flex items-center space-x-3">
