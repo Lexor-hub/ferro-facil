@@ -62,15 +62,15 @@ const scrollToCategories = () => {
 
 const fleetImages = [
   {
-    src: "/placeholder.svg",
+    src: "/frota-1.jpg",
     alt: "Frota de caminhões Grupo Soares estacionada no pátio da empresa"
   },
   {
-    src: "/placeholder.svg", 
+    src: "/frota-2.jpg", 
     alt: "Caminhões com identidade visual Soares para entrega de materiais industriais"
   },
   {
-    src: "/placeholder.svg",
+    src: "/frota-3.jpg",
     alt: "Equipamentos de carga e frota logística da empresa Grupo Soares"
   }
 ];
