@@ -39,36 +39,21 @@ export default function Header() {
   return <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-sm shadow-card" : "bg-white"}`}>
       <nav className="container-custom h-header flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-4">
-          <div className="w-12 h-12">
-            <img 
-              src="/lovable-uploads/196c5da4-f510-457d-b523-c41e777fe6bf.png" 
-              alt="Logo Grupo Soares"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                // Fallback to SVG if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const fallbackDiv = target.nextElementSibling as HTMLDivElement;
-                if (fallbackDiv) fallbackDiv.style.display = 'block';
-              }}
-            />
-            <div className="w-full h-full hidden">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                <circle cx="50" cy="50" r="50" fill="hsl(var(--primary))" />
-                <g fill="white" transform="translate(50,50)">
-                  <path d="M-8,-20 L-8,-16 L-16,-16 L-16,-8 L-20,-8 L-20,8 L-16,8 L-16,16 L-8,16 L-8,20 L8,20 L8,16 L16,16 L16,8 L20,8 L20,-8 L16,-8 L16,-16 L8,-16 L8,-20 Z" />
-                  <circle cx="0" cy="0" r="8" fill="hsl(var(--primary))" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-              </svg>
-            </div>
+        <Link to="/" className="flex items-center space-x-3">
+          <div className="w-10 h-10">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <circle cx="50" cy="50" r="50" fill="hsl(var(--primary))" />
+              <g fill="white" transform="translate(50,50)">
+                <path d="M-8,-20 L-8,-16 L-16,-16 L-16,-8 L-20,-8 L-20,8 L-16,8 L-16,16 L-8,16 L-8,20 L8,20 L8,16 L16,16 L16,8 L20,8 L20,-8 L16,-8 L16,-16 L8,-16 L8,-20 Z" />
+                <circle cx="0" cy="0" r="8" fill="hsl(var(--primary))" />
+                <circle cx="0" cy="0" r="4" fill="white" />
+              </g>
+            </svg>
           </div>
-          <div className="flex flex-col justify-center">
-            <div className="font-bold text-xl text-foreground leading-tight">Grupo Soares</div>
-            <div className="text-xs text-muted-foreground font-medium tracking-wide">
-              Distribuição Industrial
-            </div>
+          <div>
+            <div className="font-bold text-lg text-foreground">Grupo Soares</div>
+            <div className="text-xs text-muted-foreground">
+          </div>
           </div>
         </Link>
 
@@ -80,7 +65,7 @@ export default function Header() {
         </div>
 
         {/* CTA Buttons */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4 mx-0">
           <a href="tel:+5511999887766" className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
             <Phone className="w-4 h-4 mr-2" />
             (11) 99988-7766
