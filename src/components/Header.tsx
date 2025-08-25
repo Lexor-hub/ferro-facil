@@ -93,17 +93,11 @@ export default function Header() {
           </div>
 
           {/* CTA Buttons - Fixed width container */}
-          <div className="hidden md:flex items-center justify-end space-x-3 w-64">
-            <div className="flex items-center text-xs text-primary font-semibold bg-primary/10 px-3 py-2 rounded-full border border-primary/20 whitespace-nowrap">
-              <Phone className="w-3 h-3 mr-2 flex-shrink-0" />
-              <span className="hidden xl:inline">ATENDIMENTO</span>
-              <span className="xl:hidden">EMERGENCIAL</span>
-              <span className="hidden xl:inline">&nbsp;EMERGENCIAL</span>
-            </div>
+          <div className="hidden md:flex items-center justify-end w-64">
             <Button 
               onClick={() => openWhatsApp({ page: "header" })} 
               className="bg-accent hover:bg-accent/90 text-accent-foreground whitespace-nowrap flex-shrink-0"
-              size="sm"
+              size="default"
             >
               Chamar no WhatsApp
             </Button>
@@ -141,10 +135,6 @@ export default function Header() {
             </div>
             
             <div className="pt-4 border-t border-border space-y-4">
-              <div className="flex items-center justify-center text-sm text-primary font-semibold bg-primary/10 px-4 py-3 rounded-xl border border-primary/20">
-                <Phone className="w-4 h-4 mr-2 flex-shrink-0" />
-                <span>ATENDIMENTO EMERGENCIAL</span>
-              </div>
               <Button 
                 onClick={() => openWhatsApp({ page: "header mobile" })} 
                 className="w-full bg-accent hover:bg-accent/90 text-accent-foreground py-3"
