@@ -71,30 +71,54 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Media Card */}
+          {/* Quality Banner */}
           <div className="relative">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover">
-              <div className="aspect-video bg-white/20 rounded-xl flex items-center justify-center relative overflow-hidden">
-                {showVideo ? (
-                  <button className="flex items-center justify-center w-16 h-16 bg-accent rounded-full text-white hover:bg-accent/90 transition-colors">
-                    <Play className="w-6 h-6 ml-1" />
-                  </button>
-                ) : (
-                  <div className="text-center text-white/80">
-                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">GS</span>
-                      </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/20">
+              <div className="text-center space-y-6">
+                {/* Main Quality Message */}
+                <div className="space-y-3">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/20 rounded-full mb-4">
+                    <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">✓</span>
                     </div>
-                    <p className="font-medium">Grupo Soares</p>
-                    <p className="text-sm text-white/60">Ferro & Aço Industrial</p>
                   </div>
-                )}
+                  <h3 className="text-2xl font-bold text-white leading-tight">
+                    PRODUTOS DE<br />QUALIDADE COMPROVADA
+                  </h3>
+                  <p className="text-white/80 text-lg">
+                    Certificações internacionais e garantia de procedência
+                  </p>
+                </div>
+
+                {/* Certification Badges */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">🏆</div>
+                    <p className="text-sm font-semibold text-white">ISO 9001</p>
+                    <p className="text-xs text-white/70">Qualidade</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">🛡️</div>
+                    <p className="text-sm font-semibold text-white">INMETRO</p>
+                    <p className="text-xs text-white/70">Conformidade</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">⚡</div>
+                    <p className="text-sm font-semibold text-white">+25 Anos</p>
+                    <p className="text-xs text-white/70">Experiência</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">🚚</div>
+                    <p className="text-sm font-semibold text-white">Entrega</p>
+                    <p className="text-xs text-white/70">Garantida</p>
+                  </div>
+                </div>
               </div>
               
               {/* Decorative Elements */}
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full"></div>
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-pulse"></div>
               <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/20 rounded-full"></div>
+              <div className="absolute top-4 left-4 w-2 h-2 bg-white/30 rounded-full"></div>
             </div>
           </div>
         </div>
