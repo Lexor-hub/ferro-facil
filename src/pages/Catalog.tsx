@@ -7,6 +7,16 @@ import HeroSection from "@/components/HeroSection";
 import CategoryChips from "@/components/CategoryChips";
 import { openWhatsApp } from "@/lib/whatsapp";
 
+// Import category images
+import ferroAcoImg from "@/assets/ferro-aco.jpg";
+import episImg from "@/assets/epis.jpg";
+import consumiveisTecnicosImg from "@/assets/consumiveis-tecnicos.jpg";
+import insumosIndustriaisImg from "@/assets/insumos-industriais.jpg";
+import ferramentasEletricasImg from "@/assets/ferramentas-eletricas.jpg";
+import ferramentasBateriaImg from "@/assets/ferramentas-bateria.jpg";
+import ferramentasManuaisImg from "@/assets/ferramentas-manuais.jpg";
+import soldaAcessoriosImg from "@/assets/solda-acessorios.jpg";
+
 const categories = [
   { id: "ferro-aco", name: "Ferro & Aço", icon: "🔧" },
   { id: "epis", name: "EPIs", icon: "🦺" },
@@ -17,6 +27,21 @@ const categories = [
   { id: "ferramentas-manuais", name: "Ferramentas Manuais", icon: "🔨" },
   { id: "solda-acessorios", name: "Solda & Acessórios", icon: "🔥" }
 ];
+
+// Category image mapping
+const getCategoryImage = (categoryId: string) => {
+  const imageMap: { [key: string]: string } = {
+    "ferro-aco": ferroAcoImg,
+    "epis": episImg,
+    "consumiveis-tecnicos": consumiveisTecnicosImg,
+    "insumos-industriais": insumosIndustriaisImg,
+    "ferramentas-eletricas": ferramentasEletricasImg,
+    "ferramentas-bateria": ferramentasBateriaImg,
+    "ferramentas-manuais": ferramentasManuaisImg,
+    "solda-acessorios": soldaAcessoriosImg,
+  };
+  return imageMap[categoryId] || ferroAcoImg; // fallback to first image
+};
 
 const catalogItems = {
   "ferro-aco": [
@@ -138,25 +163,40 @@ export default function Catalog() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {catalogItems[category.id as keyof typeof catalogItems]?.map((item, index) => {
                   const statusConfig = getStatusConfig(item.status);
+                  const categoryImage = getCategoryImage(category.id);
                   
                   return (
-                    <Card key={index} className="overflow-hidden hover-lift border-none shadow-card">
+                    <Card key={index} className="overflow-hidden hover-lift border-none shadow-card h-full flex flex-col">
                       {/* Product Image */}
-                      <div className="aspect-[4/3] bg-secondary flex items-center justify-center">
-                        <Package className="w-16 h-16 text-muted-foreground" />
+                      <div className="aspect-[4/3] bg-secondary overflow-hidden">
+                        <img 
+                          src={categoryImage} 
+                          alt={`Produtos de ${category.name}`}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          onError={(e) => {
+                            // Fallback to Package icon if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallbackDiv = target.nextElementSibling as HTMLDivElement;
+                            if (fallbackDiv) fallbackDiv.style.display = 'flex';
+                          }}
+                        />
+                        <div className="w-full h-full bg-secondary hidden items-center justify-center">
+                          <Package className="w-16 h-16 text-muted-foreground" />
+                        </div>
                       </div>
                       
-                      <CardContent className="p-6">
+                      <CardContent className="p-6 flex-1 flex flex-col">
                         <div className="flex items-start justify-between mb-3">
-                          <h3 className="font-semibold text-lg text-foreground leading-tight flex-1">
+                          <h3 className="font-semibold text-lg text-foreground leading-tight flex-1 min-h-[3.5rem] line-clamp-2">
                             {item.title}
                           </h3>
-                          <Badge className={`ml-2 ${statusConfig.color} border-none`}>
+                          <Badge className={`ml-2 ${statusConfig.color} border-none flex-shrink-0`}>
                             {statusConfig.label}
                           </Badge>
                         </div>
                         
-                        <ul className="space-y-1 mb-6">
+                        <ul className="space-y-1 mb-6 flex-1">
                           {item.bullets.map((bullet, bulletIndex) => (
                             <li key={bulletIndex} className="text-sm text-muted-foreground flex items-start">
                               <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-2 flex-shrink-0"></span>
@@ -167,7 +207,7 @@ export default function Catalog() {
                         
                         <Button
                           onClick={() => openWhatsApp({ item: item.title })}
-                          className="w-full"
+                          className="w-full mt-auto"
                           variant="default"
                         >
                           <ShoppingCart className="w-4 h-4 mr-2" />
