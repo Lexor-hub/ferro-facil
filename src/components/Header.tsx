@@ -67,7 +67,7 @@ export default function Header() {
           <div className="flex flex-col justify-center">
             <div className="font-bold text-xl text-foreground leading-tight">Grupo Soares</div>
             <div className="text-xs text-muted-foreground font-medium tracking-wide">
-              Distribuição Industrial
+              Soluções Industriais
             </div>
           </div>
         </Link>
