@@ -138,15 +138,50 @@ export default function Company() {
       </section>
 
       {/* 5. Como trabalhamos */}
-      <section className="py-20 bg-background">
-        <div className="container-custom">
-          <div className="text-center mb-16">
+      <section className="py-20 bg-gradient-subtle relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-5">
+          <div style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23174A8B' fill-opacity='0.4'%3E%3Ccircle cx='5' cy='5' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            width: '100%',
+            height: '100%'
+          }} />
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+            </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Como trabalhamos
             </h2>
+            <div className="w-24 h-1 bg-gradient-primary mx-auto mb-6 rounded-full"></div>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Processos pensados para simplificar sua operação com máxima eficiência
+            </p>
           </div>
           
-          <STimeline />
+          <div className="relative">
+            {/* Background glow */}
+            <div className="absolute inset-0 bg-gradient-primary opacity-5 rounded-3xl blur-3xl"></div>
+            
+            {/* Timeline container */}
+            <div className="relative bg-white/50 backdrop-blur-sm rounded-3xl p-8 lg:p-12 border border-white/20 shadow-card">
+              <STimeline />
+            </div>
+          </div>
+          
+          {/* Bottom accent */}
+          <div className="flex justify-center mt-12">
+            <div className="flex space-x-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-primary/30 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            </div>
+          </div>
         </div>
       </section>
 
