@@ -104,7 +104,7 @@ export default function HeroSection({
                   </div>
                   <div className="bg-white/10 rounded-lg p-3 text-center">
                     <div className="text-2xl mb-1">⚡</div>
-                    <p className="text-sm font-semibold text-white">+25 Anos</p>
+                    <p className="text-sm font-semibold text-white">+15 Anos</p>
                     <p className="text-xs text-white/70">Experiência</p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3 text-center">
