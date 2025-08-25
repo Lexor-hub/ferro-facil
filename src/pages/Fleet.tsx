@@ -125,11 +125,11 @@ export default function Fleet() {
       <section className="py-20 bg-background">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Do pátio ao seu destino, com controle de ponto a ponta
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-6 leading-tight">
+              Do pátio ao seu destino, com controle ponto a ponta
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Cada etapa do processo é monitorada para garantir que seus materiais cheguen no prazo e em perfeitas condições.
+              Cada etapa do processo é monitorada para garantir que seus materiais cheguem no prazo e em perfeitas condições.
             </p>
           </div>
           

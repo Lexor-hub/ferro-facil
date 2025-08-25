@@ -86,10 +86,10 @@ export default function STimeline() {
     <div ref={containerRef} className="relative">
       {/* Desktop S-Timeline */}
       {!isMobile && (
-        <div className="hidden md:block relative h-[600px] w-full">
+        <div className="hidden md:block relative h-[600px] w-full overflow-hidden">
           {/* SVG Path */}
           <svg
-            className="absolute inset-0 w-full h-full overflow-visible"
+            className="absolute inset-0 w-full h-full"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
           >
@@ -139,7 +139,7 @@ export default function STimeline() {
                 
                 {/* Step card */}
                 <Card 
-                  className={`w-64 mt-6 border-none shadow-card transition-all duration-700 ${
+                  className={`w-64 mt-6 border-none shadow-card transition-all duration-700 max-w-[calc(100vw-2rem)] ${
                     isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}
                 >

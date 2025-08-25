@@ -113,7 +113,9 @@ export default function Services() {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <Settings className="w-8 h-8 text-primary" />
-                <h2 className="text-3xl font-bold text-foreground">Corte e preparação — sob medida e conteúdo</h2>
+                <h2 className="text-2xl lg:text-3xl font-bold text-foreground leading-tight">
+                  Corte e preparação — sob medida e conteúdo
+                </h2>
               </div>
               
               <div className="space-y-6">
@@ -171,7 +173,9 @@ export default function Services() {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <Truck className="w-8 h-8 text-primary" />
-                <h2 className="text-3xl font-bold text-foreground">Seleção e expedição — pronto certo, do primeiro ao último item</h2>
+                <h2 className="text-2xl lg:text-3xl font-bold text-foreground leading-tight">
+                  Seleção e expedição — produto certo, do primeiro ao último item
+                </h2>
               </div>
               
               <ul className="space-y-3 mb-8">
@@ -221,7 +225,9 @@ export default function Services() {
         <div className="container-custom">
           <div className="flex items-center space-x-3 mb-12">
             <Users className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold text-foreground">Atendimento técnico — escolha certa com autorização</h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-foreground leading-tight">
+              Atendimento técnico — escolha certa com orientação
+            </h2>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

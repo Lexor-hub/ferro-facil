@@ -83,8 +83,8 @@ export default function MachineCarousel() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-12 bg-white shadow-card hover:shadow-card-hover" />
-        <CarouselNext className="-right-12 bg-white shadow-card hover:shadow-card-hover" />
+        <CarouselPrevious className="-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
+        <CarouselNext className="-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
       </Carousel>
     </div>
   );
