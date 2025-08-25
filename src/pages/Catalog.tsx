@@ -141,6 +141,7 @@ export default function Catalog() {
         primaryCTA="Pedir orçamento"
         secondaryCTA="Falar com especialista"
         onSecondaryCTA={() => openWhatsApp({ context: "Gostaria de falar com um especialista sobre produtos" })}
+        showQualityBanner={true}
       />
 
       {/* Category Navigation */}

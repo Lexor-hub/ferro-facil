@@ -11,6 +11,7 @@ interface HeroSectionProps {
   secondaryVariant?: "default" | "accent" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "hero" | "whatsapp";
   onSecondaryCTA?: () => void;
   showVideo?: boolean;
+  showQualityBanner?: boolean;
 }
 
 export default function HeroSection({
@@ -21,7 +22,8 @@ export default function HeroSection({
   secondaryCTA,
   secondaryVariant = "outline",
   onSecondaryCTA,
-  showVideo = false
+  showVideo = false,
+  showQualityBanner = false
 }: HeroSectionProps) {
   return (
     <section className="relative bg-gradient-hero text-white overflow-hidden">
@@ -71,56 +73,58 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Quality Banner */}
-          <div className="relative">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/20">
-              <div className="text-center space-y-6">
-                {/* Main Quality Message */}
-                <div className="space-y-3">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/20 rounded-full mb-4">
-                    <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">✓</span>
+          {/* Quality Banner - Only show when showQualityBanner is true */}
+          {showQualityBanner && (
+            <div className="relative">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/20">
+                <div className="text-center space-y-6">
+                  {/* Main Quality Message */}
+                  <div className="space-y-3">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/20 rounded-full mb-4">
+                      <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">✓</span>
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white leading-tight">
+                      PRODUTOS DE<br />QUALIDADE COMPROVADA
+                    </h3>
+                    <p className="text-white/80 text-lg">
+                      Certificações internacionais e garantia de procedência
+                    </p>
+                  </div>
+
+                  {/* Certification Badges */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl mb-1">🏆</div>
+                      <p className="text-sm font-semibold text-white">ISO 9001</p>
+                      <p className="text-xs text-white/70">Qualidade</p>
+                    </div>
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl mb-1">🛡️</div>
+                      <p className="text-sm font-semibold text-white">INMETRO</p>
+                      <p className="text-xs text-white/70">Conformidade</p>
+                    </div>
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl mb-1">⚡</div>
+                      <p className="text-sm font-semibold text-white">+15 Anos</p>
+                      <p className="text-xs text-white/70">Experiência</p>
+                    </div>
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl mb-1">🚚</div>
+                      <p className="text-sm font-semibold text-white">Entrega</p>
+                      <p className="text-xs text-white/70">Garantida</p>
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-white leading-tight">
-                    PRODUTOS DE<br />QUALIDADE COMPROVADA
-                  </h3>
-                  <p className="text-white/80 text-lg">
-                    Certificações internacionais e garantia de procedência
-                  </p>
                 </div>
-
-                {/* Certification Badges */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🏆</div>
-                    <p className="text-sm font-semibold text-white">ISO 9001</p>
-                    <p className="text-xs text-white/70">Qualidade</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🛡️</div>
-                    <p className="text-sm font-semibold text-white">INMETRO</p>
-                    <p className="text-xs text-white/70">Conformidade</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">⚡</div>
-                    <p className="text-sm font-semibold text-white">+25 Anos</p>
-                    <p className="text-xs text-white/70">Experiência</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🚚</div>
-                    <p className="text-sm font-semibold text-white">Entrega</p>
-                    <p className="text-xs text-white/70">Garantida</p>
-                  </div>
-                </div>
+                
+                {/* Decorative Elements */}
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-pulse"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/20 rounded-full"></div>
+                <div className="absolute top-4 left-4 w-2 h-2 bg-white/30 rounded-full"></div>
               </div>
-              
-              {/* Decorative Elements */}
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-pulse"></div>
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/20 rounded-full"></div>
-              <div className="absolute top-4 left-4 w-2 h-2 bg-white/30 rounded-full"></div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       
