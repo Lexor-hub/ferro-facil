@@ -1,265 +1,186 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Search, Package, ShoppingCart, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import HeroSection from "@/components/HeroSection";
 import CategoryChips from "@/components/CategoryChips";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { supabase } from "@/integrations/supabase/client";
-import { 
-  Package, 
-  MessageSquare, 
-  CheckCircle2, 
-  Clock, 
-  AlertTriangle,
-  Search,
-  AlertCircle
-} from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  description: string | null;
-  status: string;
-  images: string[];
-  bullet_points: string[];
-}
 
 const categories = [
-  { id: "elevacao", name: "Equipamentos de Elevação", icon: "🏗️" },
-  { id: "maquinas-pesadas", name: "Máquinas Pesadas", icon: "🚜" },
-  { id: "transporte", name: "Transporte Especializado", icon: "🚛" },
-  { id: "ferramentas", name: "Ferramentas Pneumáticas", icon: "🔧" },
-  { id: "hidraulicos", name: "Sistemas Hidráulicos", icon: "💧" },
-  { id: "compressores", name: "Compressores Industriais", icon: "⚙️" },
+  { id: "ferro-aco", name: "Ferro & Aço", icon: "🔧" },
+  { id: "epis", name: "EPIs", icon: "🦺" },
+  { id: "consumiveis-tecnicos", name: "Consumíveis Técnicos", icon: "⚙️" },
+  { id: "insumos-industriais", name: "Insumos Industriais", icon: "🏭" },
+  { id: "ferramentas-eletricas", name: "Ferramentas Elétricas", icon: "⚡" },
+  { id: "ferramentas-bateria", name: "Ferramentas à Bateria", icon: "🔋" },
+  { id: "ferramentas-manuais", name: "Ferramentas Manuais", icon: "🔨" },
+  { id: "solda-acessorios", name: "Solda & Acessórios", icon: "🔥" }
 ];
+
+const catalogItems = {
+  "ferro-aco": [
+    {
+      title: "Vergalhão CA-50 Ø 10mm",
+      status: "estoque" as const,
+      bullets: ["Comprimento: 12m", "NBR 7480:2007", "Certificado de qualidade"],
+      image: "/placeholder-product.jpg"
+    },
+    {
+      title: "Chapa de Aço 1020 - 3mm",
+      status: "sob_encomenda" as const,
+      bullets: ["Dimensões: 1000x2000mm", "Acabamento natural", "Corte personalizado"],
+      image: "/placeholder-product.jpg"
+    },
+    {
+      title: "Perfil L 50x50x5mm",
+      status: "estoque" as const,
+      bullets: ["Comprimento: 6m", "Aço estrutural", "Galvanizado"],
+      image: "/placeholder-product.jpg"
+    }
+  ],
+  "epis": [
+    {
+      title: "Capacete de Segurança Class A",
+      status: "estoque" as const,
+      bullets: ["CA 31469", "Classe A - Isolamento elétrico", "Ajuste automático"],
+      image: "/placeholder-product.jpg"
+    },
+    {
+      title: "Luva de Vaqueta Reforçada",
+      status: "estoque" as const,
+      bullets: ["CA 12345", "Palma e dedos reforçados", "Punho de segurança"],
+      image: "/placeholder-product.jpg"
+    },
+    {
+      title: "Óculos de Proteção Ampla Visão",
+      status: "sob_encomenda" as const,
+      bullets: ["CA 54321", "Lente anti-embaçante", "Proteção UV"],
+      image: "/placeholder-product.jpg"
+    }
+  ],
+  // ... more categories would be populated here
+};
+
+// Generate items for other categories (simplified for demo)
+const generateItems = (categoryId: string, categoryName: string) => [
+  {
+    title: `Item Premium ${categoryName} #1`,
+    status: "estoque" as const,
+    bullets: ["Especificação técnica 1", "Certificação internacional", "Garantia estendida"],
+    image: "/placeholder-product.jpg"
+  },
+  {
+    title: `Item Profissional ${categoryName} #2`,
+    status: "sob_encomenda" as const,
+    bullets: ["Alta durabilidade", "Tecnologia avançada", "Suporte técnico"],
+    image: "/placeholder-product.jpg"
+  },
+  {
+    title: `Item Industrial ${categoryName} #3`,
+    status: "estoque" as const,
+    bullets: ["Uso industrial", "Certificado de qualidade", "Pronta entrega"],
+    image: "/placeholder-product.jpg"
+  }
+];
+
+// Populate remaining categories
+categories.forEach(cat => {
+  if (!catalogItems[cat.id as keyof typeof catalogItems]) {
+    catalogItems[cat.id as keyof typeof catalogItems] = generateItems(cat.id, cat.name);
+  }
+});
 
 const getStatusConfig = (status: string) => {
   switch (status) {
-    case "available":
-      return { 
-        label: "Disponível", 
-        variant: "default" as const, 
-        color: "bg-green-100 text-green-800",
-        icon: CheckCircle2
-      };
-    case "unavailable":
-      return { 
-        label: "Indisponível", 
-        variant: "destructive" as const, 
-        color: "bg-red-100 text-red-800",
-        icon: AlertTriangle
-      };
-    case "coming-soon":
-      return { 
-        label: "Em Breve", 
-        variant: "secondary" as const, 
-        color: "bg-yellow-100 text-yellow-800",
-        icon: Clock
-      };
+    case "estoque":
+      return { label: "Em estoque", variant: "default" as const, color: "bg-green-100 text-green-800" };
+    case "sob_encomenda":
+      return { label: "Sob encomenda", variant: "secondary" as const, color: "bg-yellow-100 text-yellow-800" };
+    case "indisponivel":
+      return { label: "Indisponível", variant: "destructive" as const, color: "bg-red-100 text-red-800" };
     default:
-      return { 
-        label: "Consultar", 
-        variant: "outline" as const, 
-        color: "bg-gray-100 text-gray-800",
-        icon: AlertCircle
-      };
+      return { label: "Consultar", variant: "outline" as const, color: "bg-gray-100 text-gray-800" };
   }
 };
 
-const Catalog = () => {
-  const [activeCategory, setActiveCategory] = useState("todos");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('name');
-
-      if (error) throw error;
-      setProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function Catalog() {
+  const [activeCategory, setActiveCategory] = useState<string>("");
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <HeroSection
-        title="Catálogo de Produtos"
-        subtitle="Descubra nossa linha completa de equipamentos e soluções industriais. Solicite orçamentos personalizados diretamente pelo WhatsApp."
-        primaryCTA="Ver produtos"
+        title="Catálogo — encontre por categoria"
+        subtitle="Mais de 10.000 itens organizados para você encontrar exatamente o que precisa. Solicite orçamentos direto pelo WhatsApp."
+        primaryCTA="Pedir orçamento"
         secondaryCTA="Falar com especialista"
         onSecondaryCTA={() => openWhatsApp({ context: "Gostaria de falar com um especialista sobre produtos" })}
       />
 
       {/* Category Navigation */}
       <CategoryChips 
-        categories={[
-          { id: "todos", name: "Todos", icon: "📦" },
-          ...categories
-        ]}
+        categories={categories}
         activeCategory={activeCategory}
         onCategoryClick={setActiveCategory}
       />
 
-      {/* Products Content */}
+      {/* Catalog Content */}
       <div className="py-12">
-        <div className="container-custom">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Carregando produtos...</p>
-            </div>
-          ) : (
-            <>
-              {categories.map(category => {
-                const categoryProducts = products.filter(p => 
-                  activeCategory === "todos" || p.category === category.id
-                );
-                
-                if (categoryProducts.length === 0 && activeCategory !== "todos") return null;
-                if (activeCategory !== "todos" && activeCategory !== category.id) return null;
-                
-                return (
-                  <section key={category.id} className="mb-16">
-                    {(activeCategory === "todos" || activeCategory === category.id) && categoryProducts.length > 0 && (
-                      <>
-                         <div className="flex items-center gap-3 mb-8">
-                           <div className="p-2 bg-primary/10 rounded-lg">
-                             <span className="text-2xl">{category.icon}</span>
-                           </div>
-                           <h2 className="text-2xl font-bold">{category.name}</h2>
-                         </div>
-                        
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                          {categoryProducts.map((product) => (
-                            <Card key={product.id} className="hover-lift shadow-card group">
-                              <CardContent className="p-6">
-                                <div className="flex items-start justify-between mb-4">
-                                  <h3 className="font-semibold text-lg">{product.name}</h3>
-                                  <Badge 
-                                    variant={getStatusConfig(product.status).variant}
-                                    className={`ml-2 ${getStatusConfig(product.status).color}`}
-                                  >
-                                    {getStatusConfig(product.status).label}
-                                  </Badge>
-                                </div>
-                                
-                                {product.description && (
-                                  <p className="text-sm text-muted-foreground mb-4">
-                                    {product.description}
-                                  </p>
-                                )}
-                                
-                                {product.bullet_points.length > 0 && (
-                                  <ul className="space-y-2 mb-6">
-                                    {product.bullet_points.map((point, index) => (
-                                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                        {point}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                                
-                                <Button 
-                                  className="w-full group-hover:shadow-lg transition-all"
-                                  onClick={() => openWhatsApp({ item: product.name })}
-                                >
-                                  <MessageSquare className="w-4 h-4 mr-2" />
-                                  Solicitar orçamento
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </section>
-                );
-              })}
+        {categories.map((category) => (
+          <section key={category.id} id={category.id} className="mb-20">
+            <div className="container-custom">
+              <div className="flex items-center space-x-3 mb-8">
+                <span className="text-3xl">{category.icon}</span>
+                <h2 className="text-3xl font-bold text-foreground">{category.name}</h2>
+              </div>
               
-              {/* Show all products when "todos" is selected */}
-              {activeCategory === "todos" && (
-                <section className="mb-16">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Package className="w-6 h-6 text-primary" />
-                    </div>
-                    <h2 className="text-2xl font-bold">Todos os Produtos</h2>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {catalogItems[category.id as keyof typeof catalogItems]?.map((item, index) => {
+                  const statusConfig = getStatusConfig(item.status);
                   
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {products.map((product) => (
-                      <Card key={product.id} className="hover-lift shadow-card group">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <h3 className="font-semibold text-lg">{product.name}</h3>
-                            <Badge 
-                              variant={getStatusConfig(product.status).variant}
-                              className={`ml-2 ${getStatusConfig(product.status).color}`}
-                            >
-                              {getStatusConfig(product.status).label}
-                            </Badge>
-                          </div>
-                          
-                          {product.description && (
-                            <p className="text-sm text-muted-foreground mb-4">
-                              {product.description}
-                            </p>
-                          )}
-                          
-                          {product.bullet_points.length > 0 && (
-                            <ul className="space-y-2 mb-6">
-                              {product.bullet_points.map((point, index) => (
-                                <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                  {point}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          
-                          <Button 
-                            className="w-full group-hover:shadow-lg transition-all"
-                            onClick={() => openWhatsApp({ item: product.name })}
-                          >
-                            <MessageSquare className="w-4 h-4 mr-2" />
-                            Solicitar orçamento
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
-              
-              {products.length === 0 && !loading && (
-                <div className="text-center py-12">
-                  <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">
-                    Nenhum produto encontrado
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Não há produtos disponíveis no momento.
-                  </p>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                  return (
+                    <Card key={index} className="overflow-hidden hover-lift border-none shadow-card">
+                      {/* Product Image */}
+                      <div className="aspect-[4/3] bg-secondary flex items-center justify-center">
+                        <Package className="w-16 h-16 text-muted-foreground" />
+                      </div>
+                      
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-semibold text-lg text-foreground leading-tight flex-1">
+                            {item.title}
+                          </h3>
+                          <Badge className={`ml-2 ${statusConfig.color} border-none`}>
+                            {statusConfig.label}
+                          </Badge>
+                        </div>
+                        
+                        <ul className="space-y-1 mb-6">
+                          {item.bullets.map((bullet, bulletIndex) => (
+                            <li key={bulletIndex} className="text-sm text-muted-foreground flex items-start">
+                              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                              {bullet}
+                            </li>
+                          ))}
+                        </ul>
+                        
+                        <Button
+                          onClick={() => openWhatsApp({ item: item.title })}
+                          className="w-full"
+                          variant="default"
+                        >
+                          <ShoppingCart className="w-4 h-4 mr-2" />
+                          Solicitar orçamento
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        ))}
       </div>
 
       {/* Não encontrou? */}
@@ -275,8 +196,8 @@ const Catalog = () => {
             </p>
             <Button
               onClick={() => openWhatsApp({ context: "Não encontrei o produto que procuro no catálogo" })}
+              variant="hero"
               size="lg"
-              className="bg-gradient-primary hover:shadow-lg"
             >
               <Search className="w-5 h-5 mr-2" />
               Buscar produto específico
@@ -286,6 +207,4 @@ const Catalog = () => {
       </section>
     </div>
   );
-};
-
-export default Catalog;
+}
