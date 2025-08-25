@@ -39,8 +39,8 @@ export default function Header() {
   return <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-sm shadow-card" : "bg-white"}`}>
       <nav className="container-custom h-header flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3">
-          <div className="w-10 h-10">
+        <Link to="/" className="flex items-center space-x-4">
+          <div className="w-12 h-12">
             <img 
               src="/lovable-uploads/196c5da4-f510-457d-b523-c41e777fe6bf.png" 
               alt="Logo Grupo Soares"
@@ -64,10 +64,11 @@ export default function Header() {
               </svg>
             </div>
           </div>
-          <div>
-            <div className="font-bold text-lg text-foreground">Grupo Soares</div>
-            <div className="text-xs text-muted-foreground">
-          </div>
+          <div className="flex flex-col justify-center">
+            <div className="font-bold text-xl text-foreground leading-tight">Grupo Soares</div>
+            <div className="text-xs text-muted-foreground font-medium tracking-wide">
+              Distribuição Industrial
+            </div>
           </div>
         </Link>
 
