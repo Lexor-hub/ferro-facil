@@ -81,10 +81,10 @@ export default function Header() {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <a href="tel:+5511999887766" className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
+          <div className="flex items-center text-sm text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
             <Phone className="w-4 h-4 mr-2" />
-            (11) 99988-7766
-          </a>
+            ATENDIMENTO EMERGENCIAL
+          </div>
           <Button onClick={() => openWhatsApp({
           page: "header"
         })} className="bg-accent hover:bg-accent/90 text-accent-foreground">
@@ -105,10 +105,10 @@ export default function Header() {
                 {item.name}
               </Link>)}
             <div className="pt-4 border-t border-border space-y-3">
-              <a href="tel:+5511999887766" className="flex items-center text-sm text-muted-foreground">
+              <div className="flex items-center text-sm text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
                 <Phone className="w-4 h-4 mr-2" />
-                (11) 99988-7766
-              </a>
+                ATENDIMENTO EMERGENCIAL
+              </div>
               <Button onClick={() => openWhatsApp({
             page: "header mobile"
           })} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
