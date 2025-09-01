@@ -10,12 +10,6 @@ const navigation = [{
   name: "Catálogo",
   href: "/catalogo"
 }, {
-  name: "Serviços",
-  href: "/servicos"
-}, {
-  name: "Frota & Logística",
-  href: "/frota-logistica"
-}, {
   name: "Empresa",
   href: "/empresa"
 }, {
