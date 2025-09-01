@@ -3,21 +3,80 @@ import MapboxMap from "@/components/MapboxMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import HeroSection from "@/components/HeroSection";
+import HeroCarousel from "@/components/HeroCarousel";
+import WeeklyOffers from "@/components/WeeklyOffers";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 
+// Import das imagens
+import ferroAcoImg from "@/assets/ferro-aco.jpg";
+import episImg from "@/assets/epis.jpg";
+import consumiveisImg from "@/assets/consumiveis-tecnicos.jpg";
+import insumosImg from "@/assets/insumos-industriais.jpg";
+import ferramentasEletricasImg from "@/assets/ferramentas-eletricas.jpg";
+import ferramentasBateriaImg from "@/assets/ferramentas-bateria.jpg";
+import ferramentasManuaisImg from "@/assets/ferramentas-manuais.jpg";
+import soldaImg from "@/assets/solda-acessorios.jpg";
+
 const categories = [
-  { name: "Ferro & Aço", href: "/catalogo#ferro-aco", icon: "🔧" },
-  { name: "EPIs", href: "/catalogo#epis", icon: "🦺" },
-  { name: "Consumíveis Técnicos", href: "/catalogo#consumiveis-tecnicos", icon: "⚙️" },
-  { name: "Insumos Industriais", href: "/catalogo#insumos-industriais", icon: "🏭" },
-  { name: "Ferramentas Elétricas", href: "/catalogo#ferramentas-eletricas", icon: "⚡" },
-  { name: "Ferramentas à Bateria", href: "/catalogo#ferramentas-bateria", icon: "🔋" },
-  { name: "Ferramentas Manuais", href: "/catalogo#ferramentas-manuais", icon: "🔨" },
-  { name: "Solda & Acessórios", href: "/catalogo#solda-acessorios", icon: "🔥" }
+  { 
+    name: "Ferro & Aço", 
+    href: "/catalogo#ferro-aco", 
+    icon: "🔧",
+    image: ferroAcoImg,
+    description: "Barras, chapas, tubos e perfis. Corte sob medida disponível."
+  },
+  { 
+    name: "EPIs", 
+    href: "/catalogo#epis", 
+    icon: "🦺",
+    image: episImg,
+    description: "Equipamentos certificados para proteção individual completa."
+  },
+  { 
+    name: "Consumíveis Técnicos", 
+    href: "/catalogo#consumiveis-tecnicos", 
+    icon: "⚙️",
+    image: consumiveisImg,
+    description: "Materiais técnicos para manutenção e produção industrial."
+  },
+  { 
+    name: "Insumos Industriais", 
+    href: "/catalogo#insumos-industriais", 
+    icon: "🏭",
+    image: insumosImg,
+    description: "Materiais básicos e especializados para processos industriais."
+  },
+  { 
+    name: "Ferramentas Elétricas", 
+    href: "/catalogo#ferramentas-eletricas", 
+    icon: "⚡",
+    image: ferramentasEletricasImg,
+    description: "Equipamentos elétricos profissionais de alta performance."
+  },
+  { 
+    name: "Ferramentas à Bateria", 
+    href: "/catalogo#ferramentas-bateria", 
+    icon: "🔋",
+    image: ferramentasBateriaImg,
+    description: "Portabilidade e potência para trabalhos sem limitações."
+  },
+  { 
+    name: "Ferramentas Manuais", 
+    href: "/catalogo#ferramentas-manuais", 
+    icon: "🔨",
+    image: ferramentasManuaisImg,
+    description: "Precisão e durabilidade para o trabalho artesanal."
+  },
+  { 
+    name: "Solda & Acessórios", 
+    href: "/catalogo#solda-acessorios", 
+    icon: "🔥",
+    image: soldaImg,
+    description: "Eletrodos, gases e equipamentos para soldagem profissional."
+  }
 ];
 
 const problems = [
@@ -82,16 +141,8 @@ export default function Home() {
   );
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <HeroSection
-        title="Seu fornecedor industrial, rápido e sem complicações"
-        subtitle="Ferro & Aço, ferramentas, EPIs e insumos industriais. Logística própria, atendimento 24h e mais de 20 anos de experiência."
-        primaryCTA="Chamar no WhatsApp"
-        primaryVariant="whatsapp"
-        secondaryCTA="Ver categorias"
-        secondaryVariant="accent"
-        onSecondaryCTA={scrollToCategories}
-      />
+      {/* Hero Carousel */}
+      <HeroCarousel />
 
       {/* O que não pode acontecer */}
       <section className="py-20 bg-background">
@@ -149,6 +200,10 @@ export default function Home() {
         </div>
       </section>
 
+      
+      {/* Ofertas da Semana */}
+      <WeeklyOffers />
+
       {/* Encontre rápido o que precisa */}
       <section id="categories" className="py-20 bg-gradient-subtle">
         <div className="container-custom">
@@ -168,17 +223,37 @@ export default function Home() {
                 to={category.href}
                 className="group"
               >
-                <Card className="p-6 text-center hover-lift border border-border/50 shadow-card bg-white group-hover:shadow-card-hover group-hover:border-primary/20 transition-all duration-300">
-                  <CardContent className="p-0">
-                    <div className="text-4xl mb-4">{category.icon}</div>
-                    <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
-                      {category.name}
-                    </h3>
-                    <div className="flex items-center justify-center text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-sm">Ver produtos</span>
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                <Card className="h-full overflow-hidden border border-border/50 shadow-card bg-white group-hover:shadow-card-hover group-hover:border-primary/20 transition-all duration-300 hover-lift">
+                  <div className="relative">
+                    {/* Background Image */}
+                    <div className="h-32 relative overflow-hidden">
+                      <img 
+                        src={category.image} 
+                        alt={category.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                      
+                      {/* Icon Overlay */}
+                      <div className="absolute bottom-3 left-3">
+                        <div className="text-3xl filter drop-shadow-lg">{category.icon}</div>
+                      </div>
                     </div>
-                  </CardContent>
+                    
+                    {/* Content */}
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
+                        {category.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                        {category.description}
+                      </p>
+                      <div className="flex items-center justify-between text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-sm font-medium">Ver produtos</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </div>
+                    </CardContent>
+                  </div>
                 </Card>
               </Link>
             ))}
@@ -208,28 +283,39 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-                Logística própria, prazos controlados
+                Logística própria, sua garantia de confiabilidade
               </h2>
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
-                  <span>Janelas de entrega de 2 horas</span>
+                  <span>Controle total sobre entregas</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
-                  <span>Rastreamento em tempo real</span>
+                  <span>Equipe especializada em manuseio</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
-                  <span>Comprovante digital de entrega</span>
+                  <span>Flexibilidade de horários</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                  <span>Cobertura na Grande São Paulo</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                  <span>Carga e descarga incluídas</span>
                 </div>
               </div>
-              <Link to="/frota-logistica">
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:border-white/50">
-                  Conheça a logística
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <Button
+                onClick={() => openWhatsApp({ context: "Gostaria de saber mais sobre a logística" })}
+                variant="outline" 
+                size="lg" 
+                className="border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+              >
+                Falar sobre logística
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
             </div>
             <div className="relative">
               <Carousel

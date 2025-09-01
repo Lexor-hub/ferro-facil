@@ -166,6 +166,24 @@
     @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
   }
 
+  /* Carousel controls mobile-friendly */
+  .carousel-nav-mobile {
+    @apply w-10 h-10 sm:w-12 sm:h-12;
+  }
+
+  /* Badge styles for offers */
+  .offer-badge {
+    @apply absolute top-3 left-3 z-10 px-3 py-1 text-xs font-bold rounded-full;
+  }
+
+  .offer-badge.oferta {
+    @apply bg-accent text-white;
+  }
+
+  .offer-badge.imbativel {
+    @apply bg-red-500 text-white;
+  }
+
   /* Text truncation utilities */
   .line-clamp-1 {
     display: -webkit-box;
@@ -186,5 +204,12 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Mobile responsive grid adjustments */
+  @media (max-width: 768px) {
+    .categories-grid {
+      @apply grid-cols-2;
+    }
   }
 }
