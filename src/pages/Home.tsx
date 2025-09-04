@@ -7,8 +7,7 @@ import HeroCarousel from "@/components/HeroCarousel";
 import WeeklyOffers from "@/components/WeeklyOffers";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
-import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
+import MachineCarousel from "@/components/MachineCarousel";
 
 // Import das imagens
 import ferroAcoImg from "@/assets/ferro-aco.jpg";
@@ -136,9 +135,6 @@ const fleetImages = [
 ];
 
 export default function Home() {
-  const plugin = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
-  );
   return (
     <div className="min-h-screen">
       {/* Hero Carousel */}
@@ -291,29 +287,7 @@ export default function Home() {
               </Button>
             </div>
             <div className="relative">
-              <Carousel
-                plugins={[plugin.current]}
-                className="w-full max-w-lg mx-auto"
-                onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.reset}
-              >
-                <CarouselContent>
-                  {fleetImages.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                        <div className="aspect-video rounded-xl overflow-hidden">
-                          <img
-                            src={image.src}
-                            alt={image.alt}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                        </div>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
+              <MachineCarousel />
             </div>
           </div>
         </div>

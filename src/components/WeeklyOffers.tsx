@@ -1,98 +1,111 @@
+import { useState, useEffect } from "react";
 import { ArrowRight, ShoppingCart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { openWhatsApp } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OfferProduct {
-  id: number;
+  id: string;
   name: string;
-  sku: string;
-  image: string;
-  specifications: string[];
-  badge: "OFERTA" | "IMBATÍVEL";
+  sku?: string;
+  description?: string;
+  image?: string;
   category: string;
+  price?: number;
 }
 
-const offerProducts: OfferProduct[] = [
+// Fallback products if no weekly specials are found
+const fallbackProducts: OfferProduct[] = [
   {
-    id: 1,
+    id: "fallback-1",
     name: "Furadeira de Impacto Profissional",
     sku: "FIP-850W",
-    image: "/public/placeholder.svg",
-    specifications: ["850W de potência", "Mandril 13mm", "Velocidade variável"],
-    badge: "OFERTA",
+    description: "850W de potência • Mandril 13mm • Velocidade variável",
     category: "Ferramentas Elétricas"
   },
   {
-    id: 2,
+    id: "fallback-2",
     name: "Capacete de Segurança com Jugular",
     sku: "CS-CA-001",
-    image: "/public/placeholder.svg", 
-    specifications: ["Certificação INMETRO", "Material ABS", "Cores variadas"],
-    badge: "IMBATÍVEL",
+    description: "Certificação INMETRO • Material ABS • Cores variadas",
     category: "EPIs"
   },
   {
-    id: 3,
+    id: "fallback-3",
     name: "Barra Chata Aço 1020",
     sku: "BC-1020-50X6",
-    image: "/public/placeholder.svg",
-    specifications: ["50mm x 6mm", "Aço 1020", "Comprimento 6m"],
-    badge: "OFERTA",
+    description: "50mm x 6mm • Aço 1020 • Comprimento 6m",
     category: "Ferro & Aço"
   },
   {
-    id: 4,
+    id: "fallback-4",
     name: "Parafusadeira à Bateria 12V",
-    sku: "PB-12V-LI",
-    image: "/public/placeholder.svg",
-    specifications: ["Bateria 12V Li-ion", "LED de trabalho", "Carregador incluído"],
-    badge: "IMBATÍVEL",
+    sku: "PB-12V-LI", 
+    description: "Bateria 12V Li-ion • LED de trabalho • Carregador incluído",
     category: "Ferramentas à Bateria"
-  },
-  {
-    id: 5,
-    name: "Luva de Segurança Látex",
-    sku: "LS-LAT-G",
-    image: "/public/placeholder.svg",
-    specifications: ["Palma texturizada", "CA válido", "Tamanhos P ao GG"],
-    badge: "OFERTA",
-    category: "EPIs"
-  },
-  {
-    id: 6,
-    name: "Chave de Fenda Isolada 1000V",
-    sku: "CFI-1000V-6",
-    image: "/public/placeholder.svg",
-    specifications: ["Isolamento 1000V", "Cabo ergonômico", "Ponta 6mm"],
-    badge: "IMBATÍVEL", 
-    category: "Ferramentas Manuais"
-  },
-  {
-    id: 7,
-    name: "Eletrodo de Solda E6013",
-    sku: "ES-6013-25",
-    image: "/public/placeholder.svg",
-    specifications: ["Diâmetro 2,5mm", "Pacote 5kg", "Alta qualidade"],
-    badge: "OFERTA",
-    category: "Solda & Acessórios"
-  },
-  {
-    id: 8,
-    name: "Óculos de Proteção Incolor",
-    sku: "OP-INC-UV",
-    image: "/public/placeholder.svg",
-    specifications: ["Proteção UV", "Antiembaçante", "Ajuste nasal"],
-    badge: "IMBATÍVEL",
-    category: "EPIs"
   }
 ];
 
 export default function WeeklyOffers() {
+  const [products, setProducts] = useState<OfferProduct[]>(fallbackProducts);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch weekly specials from Supabase
+  useEffect(() => {
+    const fetchWeeklySpecials = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('weekly_specials')
+          .select(`
+            id,
+            sort_order,
+            products!inner(
+              id,
+              name,
+              sku,
+              description,
+              category,
+              price,
+              is_active,
+              product_images(url, alt_text, sort_order)
+            )
+          `)
+          .eq('is_active', true)
+          .eq('products.is_active', true)
+          .order('sort_order')
+          .limit(8);
+
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          const formattedProducts = data.map(item => ({
+            id: item.products.id,
+            name: item.products.name,
+            sku: item.products.sku,
+            description: item.products.description,
+            category: item.products.category,
+            price: item.products.price,
+            image: item.products.product_images?.[0]?.url
+          }));
+          setProducts(formattedProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching weekly specials:', error);
+        // Keep fallback products on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeeklySpecials();
+  }, []);
+
   const handleProductWhatsApp = (product: OfferProduct) => {
+    const identifier = product.sku ? `${product.name} (${product.sku})` : product.name;
     openWhatsApp({
-      context: `Gostaria de um orçamento para ${product.name} (${product.sku})`
+      context: `Gostaria de um orçamento para ${identifier}`
     });
   };
 
@@ -114,33 +127,36 @@ export default function WeeklyOffers() {
           </p>
         </div>
 
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {offerProducts.map((product) => (
-              <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                        <Card className="h-full hover-lift border-none shadow-premium bg-white relative overflow-hidden group">
-                          {/* Premium Badge */}
-                          <div className="absolute top-4 left-4 z-10">
-                            <span className={`badge-offer ${
-                              product.badge === "OFERTA" 
-                                ? "" 
-                                : "badge-premium"
-                            }`}>
-                              {product.badge}
-                            </span>
-                          </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-80 bg-secondary animate-pulse rounded-lg"></div>
+            ))}
+          </div>
+        ) : (
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {products.map((product, index) => (
+                <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <Card className="h-full hover-lift border-none shadow-premium bg-white relative overflow-hidden group">
+                    {/* Premium Badge */}
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="badge-offer">
+                        OFERTA
+                      </span>
+                    </div>
 
                   <CardContent className="p-6">
                     {/* Product Image */}
                     <div className="aspect-square bg-secondary rounded-lg mb-4 overflow-hidden">
                       <img 
-                        src={product.image} 
+                        src={product.image || "/placeholder.svg"} 
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -155,25 +171,29 @@ export default function WeeklyOffers() {
                         <h3 className="font-semibold text-lg text-foreground line-clamp-2 mb-1">
                           {product.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
-                          SKU: {product.sku}
-                        </p>
+                        {product.sku && (
+                          <p className="text-sm text-muted-foreground">
+                            SKU: {product.sku}
+                          </p>
+                        )}
                       </div>
 
-                      {/* Specifications */}
-                      <ul className="space-y-1">
-                        {product.specifications.map((spec, index) => (
-                          <li key={index} className="text-sm text-muted-foreground flex items-center">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2 flex-shrink-0"></span>
-                            {spec}
-                          </li>
-                        ))}
-                      </ul>
+                      {/* Description */}
+                      {product.description && (
+                        <div className="text-sm text-muted-foreground">
+                          {product.description.split('•').map((spec, index) => (
+                            <div key={index} className="flex items-center mb-1">
+                              <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2 flex-shrink-0"></span>
+                              {spec.trim()}
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Price */}
                       <div className="pt-2 border-t border-border">
                         <p className="text-lg font-semibold text-primary">
-                          Preço sob consulta
+                          {product.price ? `R$ ${product.price.toFixed(2)}` : "Preço sob consulta"}
                         </p>
                       </div>
 
@@ -199,14 +219,15 @@ export default function WeeklyOffers() {
                         </Button>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
-          <CarouselNext className="-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
-        </Carousel>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
+            <CarouselNext className="-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
+          </Carousel>
+        )}
 
         {/* CTA Final */}
         <div className="text-center mt-12">

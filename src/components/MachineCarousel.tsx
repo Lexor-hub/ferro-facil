@@ -1,90 +1,115 @@
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { useState, useEffect, useRef } from "react";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { supabase } from "@/integrations/supabase/client";
+import Autoplay from "embla-carousel-autoplay";
 
-const machines = [
+interface CarouselItemData {
+  id: string;
+  image_url: string;
+  alt_text?: string;
+  sort_order: number;
+}
+
+// Fallback images if no carousel items are found
+const fallbackImages = [
   {
-    id: 1,
-    name: "Corte a Plasma CNC",
-    description: "Precisão em cortes complexos",
-    image: "/frota-1.jpg",
-    alt: "Máquina de corte a plasma CNC realizando corte de precisão em chapa metálica"
+    id: "fallback-1",
+    image_url: "/frota-1.jpg",
+    alt_text: "Frota de caminhões Grupo Soares estacionada no pátio da empresa",
+    sort_order: 1
   },
   {
-    id: 2,
-    name: "Dobradeira Hidráulica",
-    description: "Conformação de chapas e perfis",
-    image: "/frota-2.jpg", 
-    alt: "Dobradeira hidráulica industrial para conformação de chapas metálicas"
+    id: "fallback-2", 
+    image_url: "/frota-2.jpg",
+    alt_text: "Caminhões com identidade visual Soares para entrega de materiais industriais",
+    sort_order: 2
   },
   {
-    id: 3,
-    name: "Centro de Usinagem",
-    description: "Usinagem de alta precisão",
-    image: "/frota-3.jpg",
-    alt: "Centro de usinagem CNC realizando operações de precisão"
-  },
-  {
-    id: 4,
-    name: "Serra Fita Industrial",
-    description: "Cortes retos em barras e perfis",
-    image: "/frota-1.jpg",
-    alt: "Serra fita industrial para corte de barras e perfis metálicos"
-  },
-  {
-    id: 5,
-    name: "Prensa Excêntrica",
-    description: "Conformação e estampagem",
-    image: "/frota-2.jpg",
-    alt: "Prensa excêntrica para operações de conformação e estampagem"
-  },
-  {
-    id: 6,
-    name: "Torno CNC",
-    description: "Usinagem de peças cilíndricas",
-    image: "/frota-3.jpg",
-    alt: "Torno CNC para usinagem de precisão de peças cilíndricas"
+    id: "fallback-3",
+    image_url: "/frota-3.jpg",
+    alt_text: "Equipamentos de carga e frota logística da empresa Grupo Soares",
+    sort_order: 3
   }
 ];
 
 export default function MachineCarousel() {
+  const [images, setImages] = useState<CarouselItemData[]>(fallbackImages);
+  const [loading, setLoading] = useState(true);
+  const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
+
+  // Fetch carousel items from Supabase
+  useEffect(() => {
+    const fetchCarouselItems = async () => {
+      try {
+        // First, get the 'logistica' carousel
+        const { data: carousel, error: carouselError } = await supabase
+          .from('carousels')
+          .select('id')
+          .eq('key', 'logistica')
+          .single();
+
+        if (carouselError) throw carouselError;
+
+        if (carousel) {
+          // Then get its items
+          const { data: items, error: itemsError } = await supabase
+            .from('carousel_items')
+            .select('id, image_url, alt_text, sort_order')
+            .eq('carousel_id', carousel.id)
+            .eq('is_active', true)
+            .order('sort_order');
+
+          if (itemsError) throw itemsError;
+          
+          if (items && items.length > 0) {
+            setImages(items);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching carousel items:', error);
+        // Keep fallback images on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCarouselItems();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-lg mx-auto">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+          <div className="aspect-video rounded-xl bg-white/20 animate-pulse"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative max-w-5xl mx-auto">
+    <div className="relative">
       <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
+        plugins={[plugin.current]}
+        className="w-full max-w-lg mx-auto"
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.reset}
       >
-        <CarouselContent className="-ml-4">
-          {machines.map((machine) => (
-            <CarouselItem key={machine.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-              <Card className="overflow-hidden hover-lift border-none shadow-card">
-                <div className="relative aspect-[4/3] overflow-hidden">
+        <CarouselContent>
+          {images.map((image) => (
+            <CarouselItem key={image.id}>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+                <div className="aspect-video rounded-xl overflow-hidden">
                   <img
-                    src={machine.image}
-                    alt={machine.alt}
+                    src={image.image_url}
+                    alt={image.alt_text || 'Logística Grupo Soares'}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <h3 className="font-semibold text-lg mb-1">{machine.name}</h3>
-                    <p className="text-sm text-white/90">{machine.description}</p>
-                  </div>
                 </div>
-              </Card>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
-        <CarouselNext className="-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
       </Carousel>
     </div>
   );
