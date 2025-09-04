@@ -64,7 +64,7 @@ export default function HeroCarousel() {
 
   return (
     <section 
-      className="relative overflow-hidden min-h-[400px] lg:min-h-[600px]"
+      className="relative overflow-hidden w-full aspect-[16/9] md:aspect-[21/9]"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -73,7 +73,7 @@ export default function HeroCarousel() {
         <img
           src={currentSlideData.image}
           alt={currentSlideData.alt}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain md:object-cover"
         />
         
         {/* Slide Indicators (Dots) */}
