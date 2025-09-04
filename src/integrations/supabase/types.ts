@@ -14,48 +14,293 @@ export type Database = {
   }
   public: {
     Tables: {
+      banners: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          end_date: string | null
+          href: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          position: number
+          start_date: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          end_date?: string | null
+          href?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          position?: number
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          end_date?: string | null
+          href?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          position?: number
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      carousel_items: {
+        Row: {
+          alt_text: string | null
+          carousel_id: string
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean
+          sort_order: number
+        }
+        Insert: {
+          alt_text?: string | null
+          carousel_id: string
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          sort_order?: number
+        }
+        Update: {
+          alt_text?: string | null
+          carousel_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carousel_items_carousel_id_fkey"
+            columns: ["carousel_id"]
+            isOneToOne: false
+            referencedRelation: "carousels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      carousels: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          title?: string | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          id: string
+          product_id: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          product_id: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           bullet_points: string[] | null
           category: string
+          category_id: string | null
           created_at: string
           description: string | null
           id: string
           images: string[] | null
+          is_active: boolean | null
           name: string
+          price: number | null
+          sku: string | null
+          slug: string | null
           status: string | null
           updated_at: string
         }
         Insert: {
           bullet_points?: string[] | null
           category: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           images?: string[] | null
+          is_active?: boolean | null
           name: string
+          price?: number | null
+          sku?: string | null
+          slug?: string | null
           status?: string | null
           updated_at?: string
         }
         Update: {
           bullet_points?: string[] | null
           category?: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           images?: string[] | null
+          is_active?: boolean | null
           name?: string
+          price?: number | null
+          sku?: string | null
+          slug?: string | null
           status?: string | null
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+        }
         Relationships: []
+      }
+      weekly_specials: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          product_id: string
+          sort_order: number
+          week_of: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id: string
+          sort_order?: number
+          week_of?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string
+          sort_order?: number
+          week_of?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_specials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
