@@ -30,17 +30,17 @@ export default function Header() {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
-  return <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-orange-500/95 backdrop-blur-sm shadow-card" : "bg-orange-500"}`} style={{backgroundColor: "hsl(35 100% 50%)"}}>
+  return <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-gradient-premium/95 backdrop-blur-sm shadow-premium" : "bg-gradient-premium shadow-card"}`}>
       <nav className="container-custom h-header">
         <div className="flex items-center justify-between h-full">
           {/* Logo - Fixed width container for consistency */}
           <div className="flex-shrink-0 w-64">
             <Link to="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 flex-shrink-0">
+              <div className="w-10 h-10 flex-shrink-0 shadow-premium">
                 <img 
                   src="/lovable-uploads/196c5da4-f510-457d-b523-c41e777fe6bf.png" 
                   alt="Logo Grupo Soares"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain drop-shadow-lg"
                   onError={(e) => {
                     // Fallback to SVG if image fails to load
                     const target = e.target as HTMLImageElement;
@@ -61,8 +61,8 @@ export default function Header() {
                 </div>
               </div>
               <div className="flex flex-col justify-center min-w-0">
-                <div className="font-bold text-lg text-black leading-tight truncate">Grupo Soares</div>
-                <div className="text-xs text-black/70 font-medium tracking-wide truncate">
+                <div className="font-bold text-lg text-white leading-tight truncate">Grupo Soares</div>
+                <div className="text-xs text-white/70 font-medium tracking-wide truncate">
                   Soluções Industriais
                 </div>
               </div>
@@ -76,8 +76,8 @@ export default function Header() {
                 <Link 
                   key={item.href} 
                   to={item.href} 
-                  className={`text-sm font-medium transition-colors hover:text-black/80 whitespace-nowrap py-2 ${
-                    location.pathname === item.href ? "text-black font-semibold" : "text-black/70"
+                  className={`text-sm font-medium transition-colors hover:text-white/80 whitespace-nowrap py-2 ${
+                    location.pathname === item.href ? "text-white font-semibold" : "text-white/70"
                   }`}
                 >
                   {item.name}
@@ -102,7 +102,7 @@ export default function Header() {
           <div className="flex items-center md:hidden">
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)} 
-              className="p-2 rounded-lg hover:bg-black/10 transition-colors focus-ring text-black" 
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors focus-ring text-white" 
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -113,15 +113,15 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden border-t border-black/20 shadow-card" style={{backgroundColor: "hsl(35 100% 50%)"}}>
+        <div className="lg:hidden border-t border-white/20 shadow-card bg-gradient-premium">
           <div className="container-custom py-6 space-y-4">
             <div className="space-y-3">
               {navigation.map(item => (
                 <Link 
                   key={item.href} 
                   to={item.href} 
-                  className={`block text-base font-medium transition-colors hover:text-black/80 py-2 ${
-                    location.pathname === item.href ? "text-black font-semibold" : "text-black/70"
+                  className={`block text-base font-medium transition-colors hover:text-white/80 py-2 ${
+                    location.pathname === item.href ? "text-white font-semibold" : "text-white/70"
                   }`}
                 >
                   {item.name}
@@ -129,7 +129,7 @@ export default function Header() {
               ))}
             </div>
             
-            <div className="pt-4 border-t border-black/20 space-y-4">
+            <div className="pt-4 border-t border-white/20 space-y-4">
               <Button 
                 onClick={() => openWhatsApp({ page: "header mobile" })} 
                 variant="whatsapp"
