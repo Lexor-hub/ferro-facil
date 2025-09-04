@@ -144,6 +144,8 @@ export default function Home() {
       {/* Hero Carousel */}
       <HeroCarousel />
 
+      {/* Ofertas da Semana */}
+      <WeeklyOffers />
 
       {/* Muitas soluções em um lugar só */}
       <section className="py-20 bg-gradient-subtle">
@@ -172,10 +174,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      
-      {/* Ofertas da Semana */}
-      <WeeklyOffers />
 
       {/* Encontre rápido o que precisa */}
       <section id="categories" className="py-20 bg-gradient-subtle">
