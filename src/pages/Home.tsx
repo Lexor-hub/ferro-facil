@@ -144,33 +144,6 @@ export default function Home() {
       {/* Hero Carousel */}
       <HeroCarousel />
 
-      {/* O que não pode acontecer */}
-      <section className="py-20 bg-background">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              O que não pode acontecer
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Sabemos os problemas que você não quer ter. Por isso criamos processos para evitá-los.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {problems.map((problem, index) => (
-              <Card key={index} className="p-6 text-center hover-lift border-none shadow-card">
-                <CardContent className="p-0">
-                  <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <problem.icon className="w-8 h-8 text-red-500" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 text-foreground">{problem.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{problem.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Muitas soluções em um lugar só */}
       <section className="py-20 bg-gradient-subtle">
