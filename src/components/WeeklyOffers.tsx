@@ -124,17 +124,17 @@ export default function WeeklyOffers() {
           <CarouselContent className="-ml-2 md:-ml-4">
             {offerProducts.map((product) => (
               <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                <Card className="h-full hover-lift border-none shadow-card bg-white relative overflow-hidden group">
-                  {/* Badge */}
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                      product.badge === "OFERTA" 
-                        ? "bg-accent text-white" 
-                        : "bg-red-500 text-white"
-                    }`}>
-                      {product.badge}
-                    </span>
-                  </div>
+                        <Card className="h-full hover-lift border-none shadow-premium bg-white relative overflow-hidden group">
+                          {/* Premium Badge */}
+                          <div className="absolute top-4 left-4 z-10">
+                            <span className={`badge-offer ${
+                              product.badge === "OFERTA" 
+                                ? "" 
+                                : "badge-premium"
+                            }`}>
+                              {product.badge}
+                            </span>
+                          </div>
 
                   <CardContent className="p-6">
                     {/* Product Image */}

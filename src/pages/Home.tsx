@@ -147,39 +147,53 @@ export default function Home() {
       {/* Ofertas da Semana */}
       <WeeklyOffers />
 
-      {/* Muitas soluções em um lugar só */}
-      <section className="py-20 bg-gradient-subtle">
-        <div className="container-custom">
+      {/* Muitas soluções em um lugar só - Premium Dark Section */}
+      <section className="py-20 bg-gradient-dark text-white relative">
+        {/* Top Wave */}
+        <div className="absolute top-0 left-0 right-0">
+          <svg className="w-full h-16 lg:h-24" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0 0L50 15C100 30 200 60 300 75C400 90 500 90 600 82.5C700 75 800 60 900 52.5C1000 45 1100 45 1150 45L1200 45V0H1150C1100 0 1000 0 900 0C800 0 700 0 600 0C500 0 400 0 300 0C200 0 100 0 50 0H0V0Z" fill="currentColor" className="text-background"/>
+          </svg>
+        </div>
+        
+        <div className="container-custom relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Muitas soluções em um lugar só
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-white/90 max-w-3xl mx-auto">
               Mais que um fornecedor, somos seu parceiro para resolver desafios industriais.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {solutions.map((solution, index) => (
-              <Card key={index} className="p-6 text-center hover-lift border-none shadow-card bg-white">
+              <Card key={index} className="card-premium p-6 text-center hover-lift border-none">
                 <CardContent className="p-0">
-                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <solution.icon className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                    <solution.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 text-foreground">{solution.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{solution.description}</p>
+                  <h3 className="font-semibold text-lg mb-2 text-white">{solution.title}</h3>
+                  <p className="text-sm text-white/70 leading-relaxed">{solution.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
+        
+        {/* Bottom Wave */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-16 lg:h-24" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0 120L50 105C100 90 200 60 300 45C400 30 500 30 600 37.5C700 45 800 60 900 67.5C1000 75 1100 75 1150 75L1200 75V120H1150C1100 120 1000 120 900 120C800 120 700 120 600 120C500 120 400 120 300 120C200 120 100 120 50 120H0V120Z" fill="currentColor" className="text-background"/>
+          </svg>
+        </div>
       </section>
 
-      {/* Encontre rápido o que precisa */}
-      <section id="categories" className="py-20 bg-gradient-subtle">
+      {/* Encontre rápido o que precisa - Enhanced with Premium Cards */}
+      <section id="categories" className="py-20 bg-background">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold heading-premium mb-4">
               Encontre rápido o que precisa
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -194,7 +208,7 @@ export default function Home() {
                 to={category.href}
                 className="group"
               >
-                <Card className="h-full overflow-hidden border border-border/50 shadow-card bg-white group-hover:shadow-card-hover group-hover:border-primary/20 transition-all duration-300 hover-lift">
+                <Card className="h-full overflow-hidden card-gold-accent group-hover:shadow-gold group-hover:scale-[1.02] transition-all duration-300 hover-lift">
                   <div className="relative">
                     {/* Background Image */}
                     <div className="h-32 relative overflow-hidden">
@@ -205,6 +219,13 @@ export default function Home() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                       
+                      {/* Premium Badge */}
+                      <div className="absolute top-3 right-3">
+                        <div className="badge-premium">
+                          Premium
+                        </div>
+                      </div>
+                      
                       {/* Icon Overlay */}
                       <div className="absolute bottom-3 left-3">
                         <div className="text-3xl filter drop-shadow-lg">{category.icon}</div>
@@ -212,8 +233,8 @@ export default function Home() {
                     </div>
                     
                     {/* Content */}
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
+                    <CardContent className="p-6 bg-white">
+                      <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-gradient transition-colors">
                         {category.name}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
@@ -235,6 +256,7 @@ export default function Home() {
               onClick={() => openWhatsApp({ context: "Gostaria de falar com um especialista sobre produtos" })}
               variant="whatsapp"
               size="lg"
+              className="shadow-premium"
             >
               Falar com especialista
             </Button>
@@ -324,20 +346,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mensagem do fundador */}
-      <section className="py-20 bg-secondary">
+      {/* Mensagem do fundador - Premium Section */}
+      <section className="py-20 bg-gradient-premium text-white relative">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-8">
-              <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6">
-                <span className="text-white font-bold text-2xl">ES</span>
+              <div className="w-20 h-20 rounded-full bg-gradient-gold shadow-gold flex items-center justify-center mx-auto mb-6">
+                <span className="text-black font-bold text-2xl">ES</span>
               </div>
-              <blockquote className="text-2xl lg:text-3xl font-medium text-foreground mb-6 italic">
+              <blockquote className="text-2xl lg:text-3xl font-medium mb-6 italic">
                 "Construímos o Grupo Soares com a certeza de que cada cliente merece um atendimento excepcional. 
                 Não é apenas sobre vender produtos, é sobre resolver problemas e criar parcerias duradouras."
               </blockquote>
-              <cite className="text-lg text-muted-foreground">
-                <strong className="text-foreground">Edson Luiz Soares</strong><br />
+              <cite className="text-lg text-white/80">
+                <strong className="text-gradient-gold">Edson Luiz Soares</strong><br />
                 Fundador e Diretor Técnico
               </cite>
             </div>
@@ -345,11 +367,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Depoimentos */}
+      {/* Depoimentos - Enhanced Premium */}
       <section className="py-20 bg-background">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold heading-premium mb-4">
               Casos de sucesso e depoimentos
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -359,7 +381,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="p-6 shadow-card hover-lift border-none">
+              <Card key={index} className="card-gold-accent p-6 shadow-premium hover-lift">
                 <CardContent className="p-0">
                   <div className="flex items-center mb-4">
                     {[...Array(5)].map((_, i) => (
@@ -370,8 +392,8 @@ export default function Home() {
                     "{testimonial.quote}"
                   </blockquote>
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">{testimonial.avatar}</span>
+                    <div className="w-12 h-12 bg-gradient-gold rounded-full flex items-center justify-center shadow-gold">
+                      <span className="text-black font-semibold text-sm">{testimonial.avatar}</span>
                     </div>
                     <div>
                       <div className="font-semibold text-foreground">{testimonial.author}</div>

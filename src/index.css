@@ -8,49 +8,66 @@
 
 @layer base {
   :root {
-    /* Grupo Soares Color Palette */
+    /* Grupo Soares Premium Color Palette */
     --background: 0 0% 100%;
-    --foreground: 222 47% 7%;
+    --foreground: 240 10% 3.9%;
     
-    /* Blue Gradient System - Primary Brand Colors */
-    --primary-dark: 220 65% 18%;    /* #0B2A5B */
-    --primary: 220 65% 35%;         /* #174A8B */
-    --primary-light: 221 70% 45%;   /* #1F5CC4 */
+    /* Premium Professional Blue System */
+    --primary-dark: 217 91% 25%;    /* #003366 - Deep navy */
+    --primary: 217 91% 45%;         /* #0F3B82 - Professional navy blue */
+    --primary-light: 217 100% 60%;  /* #3B82F6 - Lighter blue */
     --primary-foreground: 0 0% 98%;
     
-    /* Orange Accent */
+    /* Orange Accent - Keeping existing */
     --accent: 25 88% 53%;           /* #F28C18 */
     --accent-foreground: 0 0% 98%;
     
     /* Header Orange Background */
     --header-orange: 35 100% 50%;   /* #FFA500 */
     
-    /* Neutral Palette */
+    /* Premium Dark Elements */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 7%;
+    --card-foreground: 240 10% 3.9%;
+    --card-dark: 240 10% 8%;        /* Dark card background */
+    --card-dark-foreground: 0 0% 98%;
     
-    --secondary: 215 25% 97%;       /* #F7F9FC */
-    --secondary-foreground: 222 47% 7%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --secondary-dark: 240 10% 15%;   /* Dark secondary */
+    --secondary-dark-foreground: 0 0% 90%;
     
-    --muted: 215 25% 97%;
-    --muted-foreground: 220 13% 44%; /* #6B7280 */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --muted-dark: 240 10% 25%;       /* Dark muted */
+    --muted-dark-foreground: 0 0% 70%;
     
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 221 70% 45%;
+    --border: 240 5.9% 90%;
+    --border-dark: 240 10% 20%;      /* Dark borders */
+    --input: 240 5.9% 90%;
+    --ring: 217 91% 45%;
     
-    --destructive: 0 84% 60%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-dark)) 0%, hsl(var(--primary)) 50%, hsl(var(--primary-light)) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--secondary)) 100%);
+    /* Premium Gold Accents */
+    --gold: 45 100% 50%;             /* Gold accent */
+    --gold-muted: 45 50% 60%;        /* Subtle gold */
+    --bronze: 30 60% 40%;            /* Bronze accent */
     
-    /* Shadows */
-    --shadow-card: 0 6px 20px hsl(222 47% 7% / 0.06);
-    --shadow-card-hover: 0 8px 28px hsl(222 47% 7% / 0.10);
-    --shadow-float: 0 8px 32px hsl(var(--primary) / 0.20);
+    /* Enhanced Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 45%) 0%, hsl(217 100% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 45%) 0%, hsl(217 100% 60%) 100%);
+    --gradient-dark: linear-gradient(135deg, hsl(240 10% 8%) 0%, hsl(240 10% 15%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(240 4.8% 95.9%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 100% 50%) 0%, hsl(30 60% 40%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(240 10% 8%) 0%, hsl(217 91% 45%) 100%);
+    
+    /* Premium Shadows */
+    --shadow-card: 0 4px 16px -2px hsl(0 0% 0% / 0.12), 0 2px 8px -2px hsl(0 0% 0% / 0.08);
+    --shadow-card-hover: 0 12px 32px -4px hsl(0 0% 0% / 0.18), 0 4px 16px -2px hsl(0 0% 0% / 0.12);
+    --shadow-float: 0 16px 48px -8px hsl(217 91% 45% / 0.25);
+    --shadow-premium: 0 8px 32px -4px hsl(240 10% 8% / 0.2), 0 0 0 1px hsl(45 100% 50% / 0.1);
+    --shadow-gold: 0 8px 32px -4px hsl(45 100% 50% / 0.3);
     
     /* Spacing & Layout */
     --header-height: 72px;
@@ -65,15 +82,18 @@
   }
 
   .dark {
-    --background: 222 47% 7%;
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --primary: 221 70% 55%;
-    --secondary: 220 30% 12%;
-    --muted: 220 30% 12%;
-    --muted-foreground: 220 13% 65%;
-    --card: 220 30% 8%;
-    --border: 220 30% 18%;
-    --input: 220 30% 18%;
+    --primary: 217 100% 60%;
+    --secondary: 240 10% 15%;
+    --secondary-dark: 240 10% 15%;
+    --muted: 240 10% 25%;
+    --muted-dark: 240 10% 25%;
+    --card: 240 10% 8%;
+    --card-dark: 240 10% 8%;
+    --border: 240 10% 20%;
+    --border-dark: 240 10% 20%;
+    --input: 240 10% 20%;
   }
 }
 
@@ -115,7 +135,7 @@
 }
 
 @layer components {
-  /* Gradient backgrounds */
+  /* Premium Gradient backgrounds */
   .bg-gradient-primary {
     background: var(--gradient-primary);
   }
@@ -124,19 +144,56 @@
     background: var(--gradient-hero);
   }
   
+  .bg-gradient-dark {
+    background: var(--gradient-dark);
+  }
+  
   .bg-gradient-subtle {
     background: var(--gradient-subtle);
   }
+
+  .bg-gradient-premium {
+    background: var(--gradient-premium);
+  }
+
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  /* Premium Background Classes */
+  .bg-card-dark {
+    background: hsl(var(--card-dark));
+    color: hsl(var(--card-dark-foreground));
+  }
+
+  .bg-secondary-dark {
+    background: hsl(var(--secondary-dark));
+    color: hsl(var(--secondary-dark-foreground));
+  }
   
-  /* Typography styles */
+  /* Premium Typography styles */
   .text-gradient {
     background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .heading-premium {
+    background: var(--gradient-premium);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   
-  /* Card shadows */
+  /* Premium Card shadows */
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
@@ -148,6 +205,14 @@
   .shadow-float {
     box-shadow: var(--shadow-float);
   }
+
+  .shadow-premium {
+    box-shadow: var(--shadow-premium);
+  }
+
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
   
   /* Container */
   .container-custom {
@@ -155,12 +220,20 @@
     max-width: var(--container-max);
   }
   
-  /* Smooth hover animations */
+  /* Enhanced hover animations */
   .hover-lift {
     @apply transition-all duration-300;
   }
   
   .hover-lift:hover {
+    @apply -translate-y-1.5 shadow-float;
+  }
+
+  .hover-lift-subtle {
+    @apply transition-all duration-200;
+  }
+
+  .hover-lift-subtle:hover {
     @apply -translate-y-0.5 shadow-card-hover;
   }
   
@@ -169,22 +242,78 @@
     @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
   }
 
+  /* Premium Badges */
+  .badge-premium {
+    background: var(--gradient-gold);
+    color: hsl(240 10% 8%);
+    padding: 0.375rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: var(--shadow-gold);
+    border: 1px solid hsl(45 100% 60%);
+  }
+
+  .badge-offer {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Premium Cards */
+  .card-premium {
+    background: hsl(var(--card-dark));
+    color: hsl(var(--card-dark-foreground));
+    border: 1px solid hsl(var(--border-dark));
+    box-shadow: var(--shadow-premium);
+  }
+
+  .card-gold-accent {
+    position: relative;
+    background: hsl(var(--card));
+    border: 1px solid hsl(45 100% 50% / 0.2);
+    box-shadow: var(--shadow-card), 0 0 20px hsl(45 100% 50% / 0.1);
+  }
+
+  .card-gold-accent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-gold);
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
   /* Carousel controls mobile-friendly */
   .carousel-nav-mobile {
     @apply w-10 h-10 sm:w-12 sm:h-12;
   }
 
-  /* Badge styles for offers */
+  /* Enhanced Badge styles for offers */
   .offer-badge {
     @apply absolute top-3 left-3 z-10 px-3 py-1 text-xs font-bold rounded-full;
   }
 
   .offer-badge.oferta {
-    @apply bg-accent text-white;
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-card);
   }
 
   .offer-badge.imbativel {
-    @apply bg-red-500 text-white;
+    background: var(--gradient-gold);
+    color: hsl(240 10% 8%);
+    box-shadow: var(--shadow-gold);
   }
 
   /* Text truncation utilities */
@@ -214,5 +343,10 @@
     .categories-grid {
       @apply grid-cols-2;
     }
+  }
+
+  /* Smooth transitions for premium feel */
+  * {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 }
