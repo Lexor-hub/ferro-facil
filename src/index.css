@@ -22,6 +22,9 @@
     --accent: 25 88% 53%;           /* #F28C18 */
     --accent-foreground: 0 0% 98%;
     
+    /* Header Orange Background */
+    --header-orange: 35 100% 50%;   /* #FFA500 */
+    
     /* Neutral Palette */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 7%;
