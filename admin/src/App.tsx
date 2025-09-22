@@ -10,6 +10,10 @@ import Categories from "./pages/Categories";
 import Banners from "./pages/Banners";
 import WeeklySpecials from "./pages/WeeklySpecials";
 import CarouselItems from "./pages/CarouselItems";
+import ImageGallery from "./pages/ImageGallery";
+import ServicesBanner from "./pages/ServicesBanner";
+import BelowBannerImages from "./pages/BelowBannerImages";
+import CompanySections from "./pages/CompanySections";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -33,6 +37,10 @@ function App() {
                       <Route path="/banners" element={<Banners />} />
                       <Route path="/ofertas" element={<WeeklySpecials />} />
                       <Route path="/carrossel" element={<CarouselItems />} />
+                      <Route path="/galeria" element={<ImageGallery />} />
+                      <Route path="/banner-servicos" element={<ServicesBanner />} />
+                      <Route path="/imagens-abaixo-banner" element={<BelowBannerImages />} />
+                      <Route path="/secoes-empresa" element={<CompanySections />} />
                     </Routes>
                   </Layout>
                 </ProtectedRoute>

@@ -34,7 +34,7 @@ const steps = [
   },
   {
     id: 6,
-    title: "Pós-venda sem atrito",
+    title: "Acompanhamento pós venda",
     description: "Reposição e ajustes rápidos.",
     position: { desktop: { x: 80, y: 85 }, mobile: { x: 0, y: 100 } }
   }
@@ -77,72 +77,30 @@ export default function STimeline() {
     return () => observer.disconnect();
   }, []);
 
-  // SVG Path for S-curve
-  const sPath = isMobile 
-    ? "M 50 0 L 50 100" // Straight line on mobile
-    : "M 10 10 Q 50 15 90 25 Q 50 35 15 40 Q 50 50 85 55 Q 50 65 20 70 Q 50 80 80 85";
-
   return (
     <div ref={containerRef} className="relative">
-      {/* Desktop S-Timeline */}
+      {/* Desktop Timeline - Grid Layout */}
       {!isMobile && (
-        <div className="hidden md:block relative h-[600px] w-full overflow-hidden">
-          {/* SVG Path */}
-          <svg
-            className="absolute inset-0 w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            <path
-              d={sPath}
-              stroke="hsl(var(--primary))"
-              strokeWidth="0.3"
-              fill="none"
-              strokeDasharray="2 2"
-              className="opacity-30"
-            />
-            <path
-              d={sPath}
-              stroke="hsl(var(--primary))"
-              strokeWidth="0.5"
-              fill="none"
-              strokeDasharray="2 2"
-              strokeDashoffset="0"
-              pathLength="100"
-              className="opacity-60"
-              style={{
-                strokeDasharray: `${visibleSteps.length * 16.67} 100`,
-                transition: 'stroke-dasharray 0.8s ease-out'
-              }}
-            />
-          </svg>
-
-          {/* Step Cards */}
+        <div className="hidden md:grid grid-cols-2 gap-x-12 gap-y-16 w-full relative py-8">
+          {/* Linha central vertical */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-primary opacity-50 z-0 transform -translate-x-1/2"></div>
+          
           {steps.map((step, index) => {
             const isVisible = visibleSteps.includes(step.id);
+            const isEven = index % 2 === 0;
+            
             return (
               <div
                 key={step.id}
                 data-step={step.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2"
-                style={{
-                  left: `${step.position.desktop.x}%`,
-                  top: `${step.position.desktop.y}%`,
-                }}
+                className={`${isEven ? 'justify-self-end' : 'justify-self-start'} transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               >
-                {/* Step marker */}
-                <div 
-                  className={`w-4 h-4 rounded-full border-2 border-primary bg-background absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 transition-all duration-500 ${
-                    isVisible ? 'bg-primary scale-110' : 'bg-background'
-                  }`}
-                />
-                
-                {/* Step card */}
-                <Card 
-                  className={`w-64 mt-6 border-none shadow-card transition-all duration-700 max-w-[calc(100vw-2rem)] ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`}
-                >
+                <Card className="border-none shadow-card w-full max-w-md relative">
+                  {/* Connecting element */}
+                  <div className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'right-0 translate-x-1/2' : 'left-0 -translate-x-1/2'} w-8 h-0.5 bg-primary`}>
+                    <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary"></div>
+                  </div>
+                  
                   <CardContent className="p-6">
                     <div className="text-sm text-primary font-semibold mb-2">
                       Passo {step.id}
@@ -161,22 +119,20 @@ export default function STimeline() {
         </div>
       )}
 
-      {/* Mobile Simple List */}
-      <div className="md:hidden space-y-6">
+      {/* Mobile Timeline - Vertical Cards */}
+      <div className="md:hidden space-y-6 relative">
+        <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-primary opacity-50 z-0" style={{ height: 'calc(100% - 32px)', transform: 'translateX(3.5px)' }}></div>
+        
         {steps.map((step, index) => (
           <div
             key={step.id}
             data-step={step.id}
-            className={`transition-all duration-700 ${
-              visibleSteps.includes(step.id) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
-            }`}
+            className={`transition-all duration-700 relative z-10 ${visibleSteps.includes(step.id) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
           >
             <Card className="border-none shadow-card">
               <CardContent className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className={`w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
-                    visibleSteps.includes(step.id) ? 'bg-primary text-white' : 'bg-background text-primary'
-                  }`}>
+                <div className="flex items-center space-x-4">
+                  <div className={`w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center flex-shrink-0 transition-all duration-500 ${visibleSteps.includes(step.id) ? 'bg-primary text-white' : 'bg-background text-primary'}`}>
                     <span className="text-sm font-bold">{step.id}</span>
                   </div>
                   <div className="flex-1">

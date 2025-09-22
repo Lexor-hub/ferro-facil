@@ -1,13 +1,18 @@
-import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone } from "lucide-react";
-import MapboxMap from "@/components/MapboxMap";
+import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone, Package, Check } from "lucide-react";
+import GoogleMap from "@/components/GoogleMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import HeroCarousel from "@/components/HeroCarousel";
 import WeeklyOffers from "@/components/WeeklyOffers";
+import BelowBannerImages from "@/components/BelowBannerImages";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
 import MachineCarousel from "@/components/MachineCarousel";
+import Wave from "@/components/Wave";
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 // Import das imagens
 import ferroAcoImg from "@/assets/ferro-aco.jpg";
@@ -91,7 +96,7 @@ const solutions = [
   { icon: Settings, title: "Corte sob medida", description: "Personalização." },
   { icon: Truck, title: "Frota própria", description: "Logística rápida." },
   { icon: Clock, title: "Preço competitivo", description: "Custo total menor." },
-  { icon: ArrowRight, title: "Agilidade", description: "Entrega em 4h." }
+  { icon: ArrowRight, title: "Agilidade", description: "Em todos os nossos processos." }
 ];
 
 const testimonials = [
@@ -135,47 +140,91 @@ const fleetImages = [
 ];
 
 export default function Home() {
+  // Definindo o tipo para o banner de serviços usando a tabela banners existente
+  type ServicesBanner = {
+    image_url: string;
+    alt_text: string;
+    is_active: boolean;
+  }
+  
+  const [servicesBanner, setServicesBanner] = useState<ServicesBanner | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServicesBanner = async () => {
+      try {
+        // Usando a tabela banners que já existe nos tipos do Supabase
+        const { data, error } = await supabase
+          .from('banners')
+          .select('image_url, alt_text, is_active')
+          .eq('is_active', true)
+          .eq('position', 1) // Assumindo que o banner de serviços é o de posição 1
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching services banner:', error);
+        }
+
+        if (data) {
+          // Convertendo para o tipo ServicesBanner
+          setServicesBanner({
+            image_url: data.image_url,
+            alt_text: data.alt_text || '',
+            is_active: data.is_active
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServicesBanner();
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Hero Carousel */}
       <HeroCarousel />
 
+      {/* Imagens abaixo do banner */}
+      <BelowBannerImages />
+
       {/* Ofertas da Semana */}
       <WeeklyOffers />
 
-      {/* Muitas soluções em um lugar só - Simplified White Section */}
-      <section className="py-20 bg-background">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 heading-premium">
-              Muitas soluções em um lugar só
+      {/* Nossas soluções */}
+      <section className="relative py-20 md:py-24 bg-gradient-premium text-white">
+        <Wave color="#FFFFFF" />
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6 md:mb-8">
+              Nossas soluções
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Mais que um fornecedor, somos seu parceiro para resolver desafios industriais.
+            <p className="text-lg leading-8 text-white/80 max-w-3xl mx-auto">
+              Soluções completas para obras de todos os portes.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
             {solutions.map((solution, index) => (
-              <Card key={index} className="p-6 text-center hover-lift shadow-card">
-                <CardContent className="p-0">
-                  <div className="w-16 h-16 bg-gradient-premium rounded-full flex items-center justify-center mx-auto mb-4">
-                    <solution.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 text-foreground">{solution.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{solution.description}</p>
-                </CardContent>
-              </Card>
+              <div key={index} className="rounded-2xl bg-white/5 p-8 text-center shadow-lg ring-1 ring-white/10">
+                <solution.icon className="h-10 w-10 text-accent mx-auto mb-6" aria-hidden="true" />
+                <h3 className="font-semibold text-lg mb-2 text-white">{solution.title}</h3>
+                <p className="text-sm text-white/70 leading-relaxed">{solution.description}</p>
+              </div>
             ))}
           </div>
         </div>
+        <div className="h-10 bg-gradient-to-b from-transparent to-white/20"></div>
       </section>
 
-      {/* Encontre rápido o que precisa - Enhanced with Premium Cards */}
-      <section id="categories" className="py-20 bg-background">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold heading-premium mb-4">
+      {/* Encontre rápido o que precisa */}
+      <section id="categories" className="py-20 md:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6 md:mb-8">
               Encontre rápido o que precisa
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -183,33 +232,29 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
             {categories.map((category, index) => (
               <Link
                 key={index}
                 to={category.href}
                 className="group"
               >
-                <Card className="h-full overflow-hidden card-gold-accent group-hover:shadow-gold group-hover:scale-[1.02] transition-all duration-300 hover-lift">
+                <div className="rounded-2xl shadow-md h-full overflow-hidden card-gold-accent group-hover:shadow-gold group-hover:scale-[1.02] transition-all duration-300 hover-lift">
                   <div className="relative">
-                    {/* Background Image */}
                     <div className="h-32 relative overflow-hidden">
                       <img 
                         src={category.image} 
                         alt={category.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                       
-                      
-                      {/* Icon Overlay */}
                       <div className="absolute bottom-3 left-3">
                         <div className="text-3xl filter drop-shadow-lg">{category.icon}</div>
                       </div>
                     </div>
                     
-                    {/* Content */}
-                    <CardContent className="p-6 bg-white">
+                    <div className="p-6 bg-white">
                       <h3 className="font-semibold text-lg mb-2 text-foreground group-hover:text-gradient transition-colors">
                         {category.name}
                       </h3>
@@ -220,9 +265,9 @@ export default function Home() {
                         <span className="text-sm font-medium">Ver produtos</span>
                         <ArrowRight className="w-4 h-4" />
                       </div>
-                    </CardContent>
+                    </div>
                   </div>
-                </Card>
+                </div>
               </Link>
             ))}
           </div>
@@ -242,12 +287,7 @@ export default function Home() {
 
       {/* Logística própria */}
       <section className="py-20 bg-gradient-premium text-white relative">
-        {/* Top Wave */}
-        <div className="absolute top-0 left-0 right-0">
-          <svg className="w-full h-16 lg:h-24" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0 0L50 15C100 30 200 60 300 75C400 90 500 90 600 82.5C700 75 800 60 900 52.5C1000 45 1100 45 1150 45L1200 45V0H1150C1100 0 1000 0 900 0C800 0 700 0 600 0C500 0 400 0 300 0C200 0 100 0 50 0H0V0Z" fill="currentColor" className="text-background"/>
-          </svg>
-        </div>
+        <Wave color="#FFFFFF" />
         <div className="container-custom relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -280,7 +320,7 @@ export default function Home() {
                 onClick={() => openWhatsApp({ context: "Gostaria de saber mais sobre a logística" })}
                 variant="outline" 
                 size="lg" 
-                className="border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+                className="border-white/30 text-black hover:text-black hover:bg-white/10 hover:border-white/50"
               >
                 Falar sobre logística
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -295,7 +335,12 @@ export default function Home() {
       </section>
 
       {/* Mensagem do fundador - Premium Section */}
-      <section className="py-20 bg-gradient-premium text-white relative">
+      <section
+        className="py-20 text-white relative"
+        style={{
+          background: 'linear-gradient(135deg, hsl(240 10% 8%) 0%, hsl(217 91% 45%) 100%)',
+        }}
+      >
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-8">
@@ -356,7 +401,7 @@ export default function Home() {
       </section>
 
       {/* Estamos aqui */}
-      <section className="py-20 bg-gradient-subtle">
+      <section className="py-20 bg-background">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -365,14 +410,14 @@ export default function Home() {
               </h2>
               <div className="space-y-4 mb-8">
                 <div className="flex items-start space-x-3">
-                  <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <MapPin className="w-6 h-6 text-gradient-premium mt-1 flex-shrink-0" />
                   <div className="text-muted-foreground">
                     <div>R. Prof. Armando Lino Antunes, 251</div>
                     <div>DISTRITO INDUSTRIAL, Mairinque - SP, CEP 18120-000</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Phone className="w-6 h-6 text-primary flex-shrink-0" />
+                  <Phone className="w-6 h-6 text-gradient-premium flex-shrink-0" />
                   <span className="text-muted-foreground">(11) 99988-7766</span>
                 </div>
               </div>
@@ -395,7 +440,7 @@ export default function Home() {
             </div>
             <div className="relative">
               <div className="bg-white rounded-2xl p-4 shadow-card">
-                <MapboxMap />
+                <GoogleMap />
               </div>
             </div>
           </div>
@@ -404,12 +449,7 @@ export default function Home() {
 
       {/* CTA Final */}
       <section className="py-20 bg-gradient-premium text-white relative">
-        {/* Top Wave */}
-        <div className="absolute top-0 left-0 right-0">
-          <svg className="w-full h-16 lg:h-24" viewBox="0 0 1200 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0 0L50 15C100 30 200 60 300 75C400 90 500 90 600 82.5C700 75 800 60 900 52.5C1000 45 1100 45 1150 45L1200 45V0H1150C1100 0 1000 0 900 0C800 0 700 0 600 0C500 0 400 0 300 0C200 0 100 0 50 0H0V0Z" fill="currentColor" className="text-background"/>
-          </svg>
-        </div>
+        <Wave color="#FFFFFF" />
         
         <div className="container-custom text-center relative z-10">
           <h2 className="text-3xl lg:text-4xl font-bold mb-6">

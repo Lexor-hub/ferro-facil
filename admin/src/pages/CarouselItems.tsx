@@ -46,7 +46,7 @@ const CarouselItems = () => {
       // First get the logistics carousel ID
       const { data: carousel, error: carouselError } = await supabase
         .from('carousels')
-        .select('id')
+        .select('id, title')
         .eq('key', 'logistica')
         .single();
 

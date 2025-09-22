@@ -12,6 +12,7 @@ interface HeroSectionProps {
   onSecondaryCTA?: () => void;
   showVideo?: boolean;
   showQualityBanner?: boolean;
+  className?: string;
 }
 
 export default function HeroSection({
@@ -23,17 +24,30 @@ export default function HeroSection({
   secondaryVariant = "outline",
   onSecondaryCTA,
   showVideo = false,
-  showQualityBanner = false
+  showQualityBanner = false,
+  className,
 }: HeroSectionProps) {
   return (
-    <section className="relative bg-gradient-hero text-white overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='5' cy='5' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          width: '100%',
-          height: '100%'
-        }} />
+    <section className={`relative bg-gradient-hero text-white overflow-hidden ${className}`}>
+      {/* Premium Mesh Background */}
+      <div className="absolute inset-0 bg-gradient-mesh"></div>
+
+      {/* Floating Geometric Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Large floating circle */}
+        <div className="absolute top-20 right-10 w-32 h-32 bg-white/5 rounded-full float-element blur-sm"></div>
+
+        {/* Medium floating squares */}
+        <div className="absolute top-40 left-16 w-16 h-16 bg-accent/10 rotate-12 float-element-slow"></div>
+        <div className="absolute bottom-32 right-32 w-24 h-24 bg-white/8 rotate-45 float-element"></div>
+
+        {/* Small floating dots */}
+        <div className="absolute top-60 left-1/4 w-4 h-4 bg-accent/30 rounded-full float-element"></div>
+        <div className="absolute bottom-40 left-20 w-6 h-6 bg-white/15 rounded-full float-element-slow"></div>
+        <div className="absolute top-32 right-1/3 w-3 h-3 bg-accent/40 rounded-full float-element"></div>
+
+        {/* Premium pattern overlay */}
+        <div className="absolute inset-0 opacity-30 mesh-gradient"></div>
       </div>
       
       <div className="container-custom relative z-10">
@@ -60,29 +74,24 @@ export default function HeroSection({
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              {secondaryCTA && (
-                <Button
-                  onClick={onSecondaryCTA}
-                  variant={secondaryVariant}
-                  size="lg"
-                  className="px-8 py-4 text-lg"
-                >
-                  {secondaryCTA}
-                </Button>
-              )}
+
             </div>
           </div>
 
           {/* Quality Banner - Only show when showQualityBanner is true */}
           {showQualityBanner && (
-            <div className="relative">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/20">
-                <div className="text-center space-y-6">
+            <div className="relative fade-in-up">
+              {/* Premium Glass Card */}
+              <div className="glass-card rounded-3xl p-8 shadow-premium relative overflow-hidden">
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 rounded-3xl"></div>
+
+                <div className="text-center space-y-6 relative z-10">
                   {/* Main Quality Message */}
                   <div className="space-y-3">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/20 rounded-full mb-4">
-                      <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">✓</span>
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent to-accent-dark rounded-2xl mb-4 shadow-glow float-element">
+                      <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <span className="text-white font-bold text-xl">✓</span>
                       </div>
                     </div>
                     <h3 className="text-2xl font-bold text-white leading-tight">
@@ -93,26 +102,26 @@ export default function HeroSection({
                     </p>
                   </div>
 
-                  {/* Certification Badges */}
+                  {/* Premium Certification Badges */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl mb-1">🏆</div>
-                      <p className="text-sm font-semibold text-white">ISO 9001</p>
+                    <div className="glass-card rounded-xl p-4 text-center hover-lift group">
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">🏆</div>
+                      <p className="text-sm font-bold text-white">ISO 9001</p>
                       <p className="text-xs text-white/70">Qualidade</p>
                     </div>
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl mb-1">🛡️</div>
-                      <p className="text-sm font-semibold text-white">INMETRO</p>
+                    <div className="glass-card rounded-xl p-4 text-center hover-lift group">
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">🛡️</div>
+                      <p className="text-sm font-bold text-white">INMETRO</p>
                       <p className="text-xs text-white/70">Conformidade</p>
                     </div>
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl mb-1">⚡</div>
-                      <p className="text-sm font-semibold text-white">+15 Anos</p>
+                    <div className="glass-card rounded-xl p-4 text-center hover-lift group">
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">⚡</div>
+                      <p className="text-sm font-bold text-white">+15 Anos</p>
                       <p className="text-xs text-white/70">Experiência</p>
                     </div>
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl mb-1">🚚</div>
-                      <p className="text-sm font-semibold text-white">Entrega</p>
+                    <div className="glass-card rounded-xl p-4 text-center hover-lift group">
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">🚚</div>
+                      <p className="text-sm font-bold text-white">Entrega</p>
                       <p className="text-xs text-white/70">Garantida</p>
                     </div>
                   </div>

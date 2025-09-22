@@ -2,14 +2,17 @@ import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
-import { 
-  LayoutDashboard, 
-  Package, 
-  FolderOpen, 
-  Image, 
-  Star, 
+import {
+  LayoutDashboard,
+  Package,
+  FolderOpen,
+  Image,
+  Star,
   PlayCircle,
-  LogOut 
+  Images,
+  Layout as LayoutIcon,
+  Building2,
+  LogOut
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -22,7 +25,11 @@ const navigation = [
   { name: 'Categorias', href: '/categorias', icon: FolderOpen },
   { name: 'Banners', href: '/banners', icon: Image },
   { name: 'Ofertas Semanais', href: '/ofertas', icon: Star },
-  { name: 'Carrossel', href: '/carrossel', icon: PlayCircle },
+  { name: 'Logística', href: '/carrossel', icon: PlayCircle },
+  { name: 'Galeria de Imagens', href: '/galeria', icon: Images },
+  { name: 'Seções da Empresa', href: '/secoes-empresa', icon: Building2 },
+  { name: 'Banner de Serviços', href: '/banner-servicos', icon: LayoutIcon },
+  { name: 'Imagens Abaixo do Banner', href: '/imagens-abaixo-banner', icon: Images },
 ];
 
 const Layout = ({ children }: LayoutProps) => {

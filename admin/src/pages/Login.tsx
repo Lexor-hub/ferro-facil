@@ -24,14 +24,21 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
+    console.log('Tentando fazer login com:', { email, password: '***' });
+
     try {
       const { error } = await signIn(email, password);
+      console.log('Resultado do signIn:', { error });
+      
       if (error) {
+        console.error('Erro detalhado:', error);
         toast.error(error.message || 'Erro ao fazer login');
       } else {
+        console.log('Login bem-sucedido!');
         toast.success('Login realizado com sucesso!');
       }
     } catch (error) {
+      console.error('Erro inesperado:', error);
       toast.error('Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);

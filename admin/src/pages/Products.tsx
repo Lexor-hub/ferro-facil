@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { generateSlug, cn } from '../lib/utils';
+import { supabase, supabaseAdmin } from '../lib/supabase';
+import { cn } from '../lib/utils';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -11,13 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { toast } from 'sonner';
-import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, Upload, List, Eye } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 
 interface Product {
   id: string;
   name: string;
-  slug: string;
+  slug?: string | null;
   description: string;
   price: number;
   sku: string;
@@ -42,7 +42,6 @@ const Products = () => {
   const [uploadingImages, setUploadingImages] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     description: '',
     price: '',
     sku: '',
@@ -51,6 +50,14 @@ const Products = () => {
   });
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
+  // Bulk import states
+  const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
+  const [bulkCategoryId, setBulkCategoryId] = useState('');
+  const [bulkProductsText, setBulkProductsText] = useState('');
+  const [bulkPreview, setBulkPreview] = useState<string[]>([]);
+  const [showBulkPreview, setShowBulkPreview] = useState(false);
+  const [bulkSaving, setBulkSaving] = useState(false);
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -58,7 +65,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('products')
         .select(`
           *,
@@ -79,7 +86,7 @@ const Products = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('categories')
         .select('id, name')
         .eq('is_active', true)
@@ -96,7 +103,7 @@ const Products = () => {
     const uploadPromises = images.map(async (file, index) => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${productId}/${Date.now()}_${index}.${fileExt}`;
-      
+
       const { error: uploadError } = await supabase.storage
         .from('product-images')
         .upload(fileName, file);
@@ -116,8 +123,8 @@ const Products = () => {
     });
 
     const imageRecords = await Promise.all(uploadPromises);
-    
-    const { error } = await supabase
+
+    const { error } = await supabaseAdmin
       .from('product_images')
       .insert(imageRecords);
 
@@ -127,19 +134,23 @@ const Products = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploadingImages(true);
-    
+
     try {
+      const selectedCategory = categories.find(cat => cat.id === formData.category_id);
       const productData = {
-        ...formData,
-        slug: formData.slug || generateSlug(formData.name),
+        name: formData.name,
+        description: formData.description || null,
         price: formData.price ? parseFloat(formData.price) : null,
+        sku: formData.sku || null,
         category_id: formData.category_id || null,
+        category: selectedCategory?.name || null,
+        is_active: formData.is_active,
       };
 
       let productId: string;
 
       if (editingProduct) {
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
           .from('products')
           .update(productData)
           .eq('id', editingProduct.id);
@@ -148,7 +159,7 @@ const Products = () => {
         productId = editingProduct.id;
         toast.success('Produto atualizado com sucesso!');
       } else {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
           .from('products')
           .insert([productData])
           .select()
@@ -178,7 +189,6 @@ const Products = () => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      slug: product.slug,
       description: product.description || '',
       price: product.price?.toString() || '',
       sku: product.sku || '',
@@ -192,7 +202,7 @@ const Products = () => {
     if (!confirm('Tem certeza que deseja excluir este produto?')) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('products')
         .delete()
         .eq('id', id);
@@ -208,7 +218,7 @@ const Products = () => {
 
   const handleToggleActive = async (product: Product) => {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('products')
         .update({ is_active: !product.is_active })
         .eq('id', product.id);
@@ -225,7 +235,6 @@ const Products = () => {
   const resetForm = () => {
     setFormData({
       name: '',
-      slug: '',
       description: '',
       price: '',
       sku: '',
@@ -240,7 +249,6 @@ const Products = () => {
     setFormData(prev => ({
       ...prev,
       name: value,
-      slug: prev.slug || generateSlug(value),
     }));
   };
 
@@ -253,6 +261,68 @@ const Products = () => {
       setSelectedImages(acceptedFiles);
     }
   });
+
+  // Bulk import functions
+  const handleBulkPreview = () => {
+    if (!bulkProductsText.trim() || !bulkCategoryId) {
+      toast.error('Selecione uma categoria e adicione produtos');
+      return;
+    }
+
+    const products = bulkProductsText
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+
+    if (products.length === 0) {
+      toast.error('Nenhum produto válido encontrado');
+      return;
+    }
+
+    setBulkPreview(products);
+    setShowBulkPreview(true);
+  };
+
+  const handleBulkSave = async () => {
+    if (bulkPreview.length === 0 || !bulkCategoryId) return;
+
+    setBulkSaving(true);
+    try {
+      const selectedCategory = categories.find(cat => cat.id === bulkCategoryId);
+      const productsData = bulkPreview.map(productName => ({
+        name: productName,
+        description: null,
+        price: null,
+        sku: null,
+        category_id: bulkCategoryId,
+        category: selectedCategory?.name || null,
+        is_active: true
+      }));
+
+      const { error } = await supabaseAdmin
+        .from('products')
+        .insert(productsData);
+
+      if (error) throw error;
+
+      toast.success(`${bulkPreview.length} produtos cadastrados com sucesso!`);
+      resetBulkForm();
+      fetchProducts();
+    } catch (error) {
+      console.error('Error bulk saving products:', error);
+      toast.error('Erro ao cadastrar produtos em massa');
+    } finally {
+      setBulkSaving(false);
+    }
+  };
+
+  const resetBulkForm = () => {
+    setBulkCategoryId('');
+    setBulkProductsText('');
+    setBulkPreview([]);
+    setShowBulkPreview(false);
+    setIsBulkDialogOpen(false);
+  };
 
   if (loading) {
     return (
@@ -269,79 +339,26 @@ const Products = () => {
           <h1 className="text-2xl font-bold text-gray-900">Produtos</h1>
           <p className="text-gray-600">Gerencie o catálogo de produtos</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) resetForm();
-        }}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Produto
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingProduct ? 'Editar Produto' : 'Novo Produto'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+        <div className="flex space-x-2">
+          {/* Bulk Import Dialog */}
+          <Dialog open={isBulkDialogOpen} onOpenChange={(open) => {
+            setIsBulkDialogOpen(open);
+            if (!open) resetBulkForm();
+          }}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <List className="h-4 w-4 mr-2" />
+                Cadastro em Massa
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Cadastro em Massa de Produtos</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Nome</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="sku">SKU</Label>
-                  <Input
-                    id="sku"
-                    value={formData.sku}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="slug">Slug (URL)</Label>
-                <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Descrição</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price">Preço (R$)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="category_id">Categoria</Label>
-                  <Select
-                    value={formData.category_id}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
-                  >
+                  <Label htmlFor="bulk-category">Categoria</Label>
+                  <Select value={bulkCategoryId} onValueChange={setBulkCategoryId}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma categoria" />
                     </SelectTrigger>
@@ -354,59 +371,207 @@ const Products = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
 
-              <div>
-                <Label>Imagens do Produto</Label>
-                <div
-                  {...getRootProps()}
-                  className={cn(
-                    "border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors",
-                    isDragActive ? "border-primary bg-primary/5" : "border-gray-300 hover:border-gray-400"
-                  )}
-                >
-                  <input {...getInputProps()} />
-                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">
-                    {isDragActive
-                      ? "Solte as imagens aqui..."
-                      : "Arraste imagens aqui ou clique para selecionar"}
-                  </p>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF até 10MB</p>
+                <div>
+                  <Label htmlFor="bulk-products">Lista de Produtos (um por linha)</Label>
+                  <Textarea
+                    id="bulk-products"
+                    value={bulkProductsText}
+                    onChange={(e) => setBulkProductsText(e.target.value)}
+                    rows={8}
+                    placeholder="Digite os nomes dos produtos, um por linha:&#10;&#10;Martelo&#10;Chave de fenda&#10;Alicate universal&#10;..."
+                  />
                 </div>
-                {selectedImages.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-600">
-                      {selectedImages.length} imagem(ns) selecionada(s)
-                    </p>
+
+                {showBulkPreview && bulkPreview.length > 0 && (
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <Eye className="h-4 w-4" />
+                      Preview ({bulkPreview.length} produtos)
+                    </Label>
+                    <div className="border rounded-md p-3 max-h-32 overflow-y-auto bg-gray-50">
+                      {bulkPreview.map((product, index) => (
+                        <div key={index} className="text-sm py-1">
+                          {index + 1}. {product}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
-              </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_active"
-                  checked={formData.is_active}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
-                />
-                <Label htmlFor="is_active">Ativo</Label>
+                <div className="flex justify-end space-x-2">
+                  {!showBulkPreview ? (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsBulkDialogOpen(false)}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleBulkPreview}
+                        disabled={!bulkCategoryId || !bulkProductsText.trim()}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Preview
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowBulkPreview(false)}
+                      >
+                        Voltar
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleBulkSave}
+                        disabled={bulkSaving}
+                      >
+                        {bulkSaving ? 'Salvando...' : `Cadastrar ${bulkPreview.length} Produtos`}
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
+            </DialogContent>
+          </Dialog>
 
-              <div className="flex justify-end space-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={uploadingImages}>
-                  {uploadingImages ? 'Salvando...' : editingProduct ? 'Atualizar' : 'Criar'}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+          {/* Single Product Dialog */}
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) resetForm();
+          }}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Produto
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingProduct ? 'Editar Produto' : 'Novo Produto'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Nome</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sku">SKU</Label>
+                    <Input
+                      id="sku"
+                      value={formData.sku}
+                      onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Descrição</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Preço (R$)</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      value={formData.price}
+                      onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="category_id">Categoria</Label>
+                    <Select
+                      value={formData.category_id}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Imagens do Produto</Label>
+                  <div
+                    {...getRootProps()}
+                    className={cn(
+                      "border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors",
+                      isDragActive ? "border-primary bg-primary/5" : "border-gray-300 hover:border-gray-400"
+                    )}
+                  >
+                    <input {...getInputProps()} />
+                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                    <p className="mt-2 text-sm text-gray-600">
+                      {isDragActive
+                        ? "Solte as imagens aqui..."
+                        : "Arraste imagens aqui ou clique para selecionar"}
+                    </p>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF até 10MB</p>
+                  </div>
+                  {selectedImages.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600">
+                        {selectedImages.length} imagem(ns) selecionada(s)
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+                  />
+                  <Label htmlFor="is_active">Ativo</Label>
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={uploadingImages}>
+                    {uploadingImages ? 'Salvando...' : editingProduct ? 'Atualizar' : 'Criar'}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Card>

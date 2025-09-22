@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, ShoppingCart, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { SectionHeader } from "@/components/ui/section-header";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
+import { ProductCard } from "@/components/ui/product-card";
 
 interface OfferProduct {
   id: string;
   name: string;
   sku?: string;
   description?: string;
-  image?: string;
+  image_url?: string;
   category: string;
   price?: number;
 }
@@ -54,6 +55,9 @@ export default function WeeklyOffers() {
 
   // Fetch weekly specials from Supabase
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchWeeklySpecials = async () => {
       try {
         const { data, error } = await supabase
@@ -75,9 +79,16 @@ export default function WeeklyOffers() {
           .eq('is_active', true)
           .eq('products.is_active', true)
           .order('sort_order')
-          .limit(8);
+          .limit(8)
+          .abortSignal(signal);
 
-        if (error) throw error;
+        if (error) {
+          if (error.name === 'AbortError') {
+            console.log('Fetch aborted: Weekly Specials');
+            return;
+          }
+          throw error;
+        }
         
         if (data && data.length > 0) {
           const formattedProducts = data.map(item => ({
@@ -87,19 +98,24 @@ export default function WeeklyOffers() {
             description: item.products.description,
             category: item.products.category,
             price: item.products.price,
-            image: item.products.product_images?.[0]?.url
+            image_url: item.products.product_images?.[0]?.url
           }));
           setProducts(formattedProducts);
         }
       } catch (error) {
-        console.error('Error fetching weekly specials:', error);
-        // Keep fallback products on error
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error fetching weekly specials:', error);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchWeeklySpecials();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const handleProductWhatsApp = (product: OfferProduct) => {
@@ -118,19 +134,17 @@ export default function WeeklyOffers() {
   return (
     <section className="py-20 bg-gradient-subtle">
       <div className="container-custom">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            🔥 Ofertas Especiais desta Semana
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Produtos selecionados com condições especiais. Aproveite antes que acabem!
-          </p>
-        </div>
+        <SectionHeader
+          title="Ofertas Especiais desta Semana"
+          subtitle="Produtos selecionados com condições especiais. Aproveite antes que acabem!"
+          align="center"
+          className="mb-16"
+        />
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-80 bg-secondary animate-pulse rounded-lg"></div>
+              <div key={i} className="h-80 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 backdrop-blur-sm"></div>
             ))}
           </div>
         ) : (
@@ -142,85 +156,13 @@ export default function WeeklyOffers() {
             className="w-full"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
-              {products.map((product, index) => (
+              {products.map((product) => (
                 <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <Card className="h-full hover-lift border-none shadow-premium bg-white relative overflow-hidden group">
-                    {/* Premium Badge */}
-                    <div className="absolute top-4 left-4 z-10">
-                      <span className="badge-offer">
-                        OFERTA
-                      </span>
-                    </div>
-
-                  <CardContent className="p-6">
-                    {/* Product Image */}
-                    <div className="aspect-square bg-secondary rounded-lg mb-4 overflow-hidden">
-                      <img 
-                        src={product.image || "/placeholder.svg"} 
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="space-y-3">
-                      <div>
-                        <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                          {product.category}
-                        </span>
-                        <h3 className="font-semibold text-lg text-foreground line-clamp-2 mb-1">
-                          {product.name}
-                        </h3>
-                        {product.sku && (
-                          <p className="text-sm text-muted-foreground">
-                            SKU: {product.sku}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Description */}
-                      {product.description && (
-                        <div className="text-sm text-muted-foreground">
-                          {product.description.split('•').map((spec, index) => (
-                            <div key={index} className="flex items-center mb-1">
-                              <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2 flex-shrink-0"></span>
-                              {spec.trim()}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Price */}
-                      <div className="pt-2 border-t border-border">
-                        <p className="text-lg font-semibold text-primary">
-                          {product.price ? `R$ ${product.price.toFixed(2)}` : "Preço sob consulta"}
-                        </p>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-col gap-2 pt-4">
-                        <Button
-                          onClick={() => handleProductWhatsApp(product)}
-                          variant="default"
-                          size="sm"
-                          className="w-full font-medium"
-                        >
-                          <ShoppingCart className="w-4 h-4 mr-2" />
-                          Solicitar Orçamento
-                        </Button>
-                        <Button
-                          onClick={() => handleProductWhatsApp(product)}
-                          variant="whatsapp"
-                          size="sm"
-                          className="w-full font-medium"
-                        >
-                          <MessageCircle className="w-4 h-4 mr-2" />
-                          WhatsApp
-                        </Button>
-                      </div>
-                    </div>
-                    </CardContent>
-                  </Card>
+                  <ProductCard 
+                    product={product}
+                    isOffer={true}
+                    onQuoteClick={() => handleProductWhatsApp(product)}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>

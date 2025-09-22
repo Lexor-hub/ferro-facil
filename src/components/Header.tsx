@@ -12,9 +12,6 @@ const navigation = [{
 }, {
   name: "Empresa",
   href: "/empresa"
-}, {
-  name: "Contato",
-  href: "/contato"
 }];
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,7 +27,7 @@ export default function Header() {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
-  return <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-gradient-premium/95 backdrop-blur-sm shadow-premium" : "bg-gradient-premium shadow-card"}`}>
+  return <header className={`header-fixed transition-all duration-300 ${isScrolled ? "bg-gradient-premium/95 backdrop-blur-sm shadow-premium" : "bg-gradient-premium shadow-card"}`}>
       <nav className="container-custom h-header">
         <div className="flex items-center justify-between h-full">
           {/* Logo - Fixed width container for consistency */}

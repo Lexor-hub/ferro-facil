@@ -1,6 +1,6 @@
 // WhatsApp integration utilities for Grupo Soares
 
-export const WHATSAPP_NUMBER = "5511999887766"; // Replace with actual number
+export const WHATSAPP_NUMBER = "5511920855739"; // Replace with actual number
 
 interface WhatsAppMessage {
   page?: string;

@@ -33,35 +33,62 @@ export default function HeroCarousel() {
 
   // Fetch banners from Supabase
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchBanners = async () => {
       try {
+        const today = new Date().toISOString().split('T')[0];
+        
         const { data, error } = await supabase
           .from('banners')
-          .select('id, title, image_url, alt_text, href')
+          .select('id, title, image_url, alt_text, href, start_date, end_date')
           .eq('is_active', true)
-          .gte('end_date', new Date().toISOString().split('T')[0])
-          .lte('start_date', new Date().toISOString().split('T')[0])
-          .order('position');
+          .order('position')
+          .abortSignal(signal);
 
-        if (error) throw error;
+        if (error) {
+          if (error.name === 'AbortError') {
+            console.log('Fetch aborted: Banners');
+            return;
+          }
+          throw error;
+        }
         
         if (data && data.length > 0) {
-          setSlides(data);
+          // Filter banners based on date range
+          const activeBanners = data.filter(banner => {
+            if (!banner.start_date && !banner.end_date) {
+              return true;
+            }
+            const startValid = !banner.start_date || banner.start_date <= today;
+            const endValid = !banner.end_date || banner.end_date >= today;
+            return startValid && endValid;
+          });
+          
+          if (activeBanners.length > 0) {
+            setSlides(activeBanners);
+          }
         }
       } catch (error) {
-        console.error('Error fetching banners:', error);
-        // Keep fallback slides on error
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error fetching banners:', error);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchBanners();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   // Auto-play functionality
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && slides.length > 0) {
       intervalRef.current = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
       }, 5000);
@@ -72,7 +99,7 @@ export default function HeroCarousel() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isPlaying]);
+  }, [isPlaying, slides.length]);
 
   const handleMouseEnter = () => {
     setIsPlaying(false);
@@ -94,29 +121,33 @@ export default function HeroCarousel() {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
-  const currentSlideData = slides[currentSlide];
-  
   if (loading) {
     return (
-      <section className="relative overflow-hidden w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/9] lg:aspect-[5/2] min-h-[300px] max-h-[80vh] bg-secondary animate-pulse">
-      </section>
+      <section className="relative overflow-hidden w-full hero-banner-mobile bg-secondary animate-pulse" />
     );
   }
 
+  // If there are no slides, don't render the carousel
+  if (!slides || slides.length === 0) {
+    return null;
+  }
+
+  const currentSlideData = slides[currentSlide];
+
   return (
-    <section 
-      className="relative overflow-hidden w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/9] lg:aspect-[5/2] min-h-[300px] max-h-[80vh]"
+    <section
+      className="relative overflow-hidden w-full hero-banner-mobile"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {/* Image Container */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full bg-gradient-to-br from-primary/10 to-accent/5 sm:bg-none">
         {currentSlideData.href ? (
           <a href={currentSlideData.href} target="_blank" rel="noopener noreferrer">
             <img
               src={currentSlideData.image_url}
               alt={currentSlideData.alt_text || currentSlideData.title || 'Banner'}
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-contain sm:object-cover object-center sm:object-top"
               loading={currentSlide === 0 ? "eager" : "lazy"}
             />
           </a>
@@ -124,13 +155,13 @@ export default function HeroCarousel() {
           <img
             src={currentSlideData.image_url}
             alt={currentSlideData.alt_text || currentSlideData.title || 'Banner'}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-contain sm:object-cover object-center sm:object-top"
             loading={currentSlide === 0 ? "eager" : "lazy"}
           />
         )}
         
         {/* Slide Indicators (Dots) */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -149,18 +180,18 @@ export default function HeroCarousel() {
       {/* Navigation Arrows */}
       <button
         onClick={goToPrevious}
-        className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+        className="absolute left-2 sm:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
         aria-label="Slide anterior"
       >
-        <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
 
       <button
         onClick={goToNext}
-        className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+        className="absolute right-2 sm:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
         aria-label="Próximo slide"
       >
-        <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:scale-110 transition-transform" />
       </button>
     </section>
   );

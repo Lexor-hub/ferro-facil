@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Clock, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { openWhatsApp } from "@/lib/whatsapp";
 
@@ -22,13 +22,31 @@ export default function Footer() {
               Mais de 20 anos fornecendo soluções industriais com qualidade, 
               agilidade e atendimento personalizado para sua empresa.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={() => openWhatsApp({ context: "Gostaria de conhecer mais sobre o Grupo Soares" })}
                 className="text-accent hover:text-accent-foreground transition-colors"
               >
                 WhatsApp
               </button>
+              <a
+                href="https://www.instagram.com/grupo_soares_ferro_e_aco?igsh=cHhvN3JlcXZtNnZk"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram do Grupo Soares"
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/grupo-soares"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn do Grupo Soares"
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
@@ -47,23 +65,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/servicos" className="text-white/80 hover:text-white transition-colors text-sm">
-                  Serviços
-                </Link>
-              </li>
-              <li>
-                <Link to="/frota-logistica" className="text-white/80 hover:text-white transition-colors text-sm">
-                  Frota & Logística
-                </Link>
-              </li>
-              <li>
                 <Link to="/empresa" className="text-white/80 hover:text-white transition-colors text-sm">
                   Empresa
-                </Link>
-              </li>
-              <li>
-                <Link to="/contato" className="text-white/80 hover:text-white transition-colors text-sm">
-                  Contato
                 </Link>
               </li>
             </ul>
@@ -81,14 +84,22 @@ export default function Footer() {
                   <div>Mairinque - SP, CEP 18120-000</div>
                 </div>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-accent flex-shrink-0" />
-                <a
-                  href="tel:+5511999887766"
-                  className="text-white/80 hover:text-white transition-colors text-sm"
-                >
-                  (11) 99988-7766
-                </a>
+              <li className="flex items-start space-x-3">
+                <Phone className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                <div className="text-white/80 text-sm space-y-1">
+                  <a
+                    href="tel:+551122223303"
+                    className="block hover:text-white transition-colors"
+                  >
+                    <span className="text-white">Telefone fixo:</span> (11) 2222-3303
+                  </a>
+                  <a
+                    href="tel:+5511920855739"
+                    className="block hover:text-white transition-colors"
+                  >
+                    <span className="text-white">Celular:</span> (11) 92085-5739
+                  </a>
+                </div>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-accent flex-shrink-0" />
@@ -130,10 +141,10 @@ export default function Footer() {
         <div className="border-t border-white/10 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-white/60 text-sm">
-              © 2024 Grupo Soares. Todos os direitos reservados.
+              © 2025 Grupo Soares. Todos os direitos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
-              <span className="text-white/60">CNPJ: 12.345.678/0001-90</span>
+              <span className="text-white/60">CNPJ: 13.397.985/0002-63</span>
             </div>
           </div>
         </div>

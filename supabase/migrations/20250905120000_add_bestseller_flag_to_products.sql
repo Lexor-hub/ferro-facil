@@ -1,0 +1,2 @@
+ALTER TABLE products
+ADD COLUMN is_bestseller BOOLEAN DEFAULT FALSE;

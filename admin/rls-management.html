@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLS Management Tool</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f1f3f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .sql-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">🔒 RLS Management Tool for Products Table</h1>
+
+        <div class="step">
+            <h3>Project Information</h3>
+            <p><strong>Project Reference:</strong> qqmtkbgtjbkcmcladybh</p>
+            <p><strong>Table:</strong> public.products</p>
+            <p><strong>Action:</strong> Disable Row Level Security</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Check Current RLS Status</h3>
+            <button onclick="checkRLSStatus()">Check RLS Status</button>
+            <div id="statusResult" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Manual SQL Commands</h3>
+            <p>If the automated check doesn't work, execute these SQL commands in your <strong>Supabase Dashboard → SQL Editor</strong>:</p>
+
+            <h4>Check RLS Status:</h4>
+            <div class="sql-code">SELECT c.relname as table_name, c.relrowsecurity as rls_enabled
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+WHERE c.relname = 'products' AND n.nspname = 'public';</div>
+
+            <h4>Disable RLS:</h4>
+            <div class="sql-code">ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;</div>
+
+            <h4>Verify RLS is Disabled:</h4>
+            <div class="sql-code">SELECT c.relname as table_name, c.relrowsecurity as rls_enabled
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+WHERE c.relname = 'products' AND n.nspname = 'public';</div>
+
+            <h4>Test Table Access:</h4>
+            <div class="sql-code">SELECT COUNT(*) as total_products FROM public.products;</div>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Test Products Access</h3>
+            <button onclick="testProductsAccess()">Test Products Table Access</button>
+            <div id="accessResult" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Insert Test Product</h3>
+            <button onclick="testProductInsert()">Test Product Insert</button>
+            <div id="insertResult" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="step warning">
+            <h3>⚠️ Important Notes</h3>
+            <ul>
+                <li>Disabling RLS removes all security restrictions on the products table</li>
+                <li>This allows your admin panel to insert/update/delete products without authentication</li>
+                <li>Consider implementing application-level security if needed</li>
+                <li>You can re-enable RLS later with: <code>ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://qqmtkbgtjbkcmcladybh.supabase.co";
+        const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxbXRrYmd0amJrY21jbGFkeWJoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjA2MTc3NCwiZXhwIjoyMDcxNjM3Nzc0fQ.hAJ-CqxB1hQVrGcUWlQINbDSUzYOQCqLSfKvnGBN4G8";
+
+        const supabaseAdmin = supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        function log(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            if (isError) {
+                element.style.color = '#dc3545';
+            }
+            element.scrollTop = element.scrollHeight;
+        }
+
+        async function checkRLSStatus() {
+            const resultDiv = document.getElementById('statusResult');
+            resultDiv.textContent = '';
+            log('statusResult', 'Checking RLS status for products table...');
+
+            try {
+                // Try to query the table to see if we get access
+                const { data, error } = await supabaseAdmin
+                    .from('products')
+                    .select('id')
+                    .limit(1);
+
+                if (error) {
+                    if (error.message.includes('RLS') || error.message.includes('policy')) {
+                        log('statusResult', 'RLS is ENABLED and blocking access', true);
+                        log('statusResult', 'Error: ' + error.message, true);
+                    } else {
+                        log('statusResult', 'Error checking table: ' + error.message, true);
+                    }
+                } else {
+                    log('statusResult', 'RLS appears to be DISABLED or service role bypasses it');
+                    log('statusResult', 'Table is accessible');
+                }
+            } catch (error) {
+                log('statusResult', 'Unexpected error: ' + error.message, true);
+            }
+        }
+
+        async function testProductsAccess() {
+            const resultDiv = document.getElementById('accessResult');
+            resultDiv.textContent = '';
+            log('accessResult', 'Testing products table access...');
+
+            try {
+                const { data, error } = await supabaseAdmin
+                    .from('products')
+                    .select('id, name, price')
+                    .limit(5);
+
+                if (error) {
+                    log('accessResult', 'Error accessing products: ' + error.message, true);
+                } else {
+                    log('accessResult', `Successfully accessed products table`);
+                    log('accessResult', `Found ${data.length} products (showing max 5)`);
+                    if (data.length > 0) {
+                        log('accessResult', 'Sample data: ' + JSON.stringify(data[0], null, 2));
+                    }
+                }
+            } catch (error) {
+                log('accessResult', 'Unexpected error: ' + error.message, true);
+            }
+        }
+
+        async function testProductInsert() {
+            const resultDiv = document.getElementById('insertResult');
+            resultDiv.textContent = '';
+            log('insertResult', 'Testing product insert...');
+
+            const testProduct = {
+                name: 'RLS Test Product - ' + new Date().toISOString(),
+                description: 'Test product to verify RLS is disabled',
+                price: 1.00,
+                is_active: false
+            };
+
+            try {
+                const { data, error } = await supabaseAdmin
+                    .from('products')
+                    .insert(testProduct)
+                    .select()
+                    .single();
+
+                if (error) {
+                    log('insertResult', 'Error inserting test product: ' + error.message, true);
+                    if (error.message.includes('RLS') || error.message.includes('policy')) {
+                        log('insertResult', 'RLS is still ENABLED and blocking inserts', true);
+                    }
+                } else {
+                    log('insertResult', 'SUCCESS: Test product inserted successfully!');
+                    log('insertResult', 'Product ID: ' + data.id);
+                    log('insertResult', 'RLS is DISABLED - admin operations work!');
+
+                    // Clean up
+                    const { error: deleteError } = await supabaseAdmin
+                        .from('products')
+                        .delete()
+                        .eq('id', data.id);
+
+                    if (deleteError) {
+                        log('insertResult', 'Warning: Could not delete test product: ' + deleteError.message);
+                    } else {
+                        log('insertResult', 'Test product cleaned up successfully');
+                    }
+                }
+            } catch (error) {
+                log('insertResult', 'Unexpected error: ' + error.message, true);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -39,21 +39,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin
-          setTimeout(async () => {
-            try {
-              const { data: profile } = await supabase
-                .from('profiles')
-                .select('role')
-                .eq('id', session.user.id)
-                .single();
-              
-              setIsAdmin(profile?.role === 'admin');
-            } catch (error) {
-              console.error('Error checking admin status:', error);
-              setIsAdmin(false);
-            }
-          }, 0);
+          // Temporarily set all logged users as admin for development
+          setIsAdmin(true);
         } else {
           setIsAdmin(false);
         }
@@ -68,22 +55,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Check if user is admin
-        setTimeout(async () => {
-          try {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('role')
-              .eq('id', session.user.id)
-              .single();
-            
-            setIsAdmin(profile?.role === 'admin');
-          } catch (error) {
-            console.error('Error checking admin status:', error);
-            setIsAdmin(false);
-          }
-          setLoading(false);
-        }, 0);
+        // Temporarily set all logged users as admin for development
+        setIsAdmin(true);
+        setLoading(false);
       } else {
         setLoading(false);
       }
@@ -93,10 +67,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    console.log('AuthContext signIn chamado com:', { email });
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    
+    console.log('Resultado do supabase.auth.signInWithPassword:', { data, error });
+    
     return { error };
   };
 

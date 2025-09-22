@@ -32,7 +32,11 @@ const fallbackImages = [
   }
 ];
 
-export default function MachineCarousel() {
+interface MachineCarouselProps {
+  carouselKey?: string;
+}
+
+export default function MachineCarousel({ carouselKey = 'logistica' }: MachineCarouselProps) {
   const [images, setImages] = useState<CarouselItemData[]>(fallbackImages);
   const [loading, setLoading] = useState(true);
   const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
@@ -41,11 +45,11 @@ export default function MachineCarousel() {
   useEffect(() => {
     const fetchCarouselItems = async () => {
       try {
-        // First, get the 'logistica' carousel
+        // Get the specified carousel
         const { data: carousel, error: carouselError } = await supabase
           .from('carousels')
           .select('id')
-          .eq('key', 'logistica')
+          .eq('key', carouselKey)
           .single();
 
         if (carouselError) throw carouselError;
