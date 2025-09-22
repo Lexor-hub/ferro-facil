@@ -5,9 +5,12 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import HeroSection from "@/components/HeroSection";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
-import MachineCarousel from "@/components/MachineCarousel";
 import STimeline from "@/components/STimeline";
 import { useCompanySections } from "@/hooks/useCompanySections";
+import { lazy, Suspense } from "react";
+
+// Lazy load heavy components
+const MachineCarousel = lazy(() => import("@/components/MachineCarousel"));
 
 export default function Company() {
   const { sections, loading, getStructureSections, getSectionByKey } = useCompanySections();
@@ -183,7 +186,9 @@ export default function Company() {
 
           {/* Machine Carousel */}
           <div className="mb-12">
-            <MachineCarousel carouselKey="tecnologia-processo" />
+            <Suspense fallback={<div className="h-80 animate-pulse bg-secondary rounded-lg flex items-center justify-center"><span className="text-muted-foreground">Carregando tecnologias...</span></div>}>
+              <MachineCarousel carouselKey="tecnologia-processo" />
+            </Suspense>
           </div>
 
           {/* Process bullets */}

@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ProductCard } from '@/components/ui/product-card';
 import { SectionHeader } from '@/components/ui/section-header';
 import { openWhatsApp } from '@/lib/whatsapp';
+import { useLocation } from 'react-router-dom';
 
 interface Product {
   id: string;
@@ -17,6 +18,7 @@ interface Product {
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,6 +43,30 @@ const ProductsPage = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (loading || !location.hash) {
+      return;
+    }
+
+    const elementId = location.hash.replace('#', '');
+    const target = document.getElementById(elementId);
+
+    if (!target) {
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+    const timeout = window.setTimeout(() => {
+      target.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(timeout);
+      target.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+    };
+  }, [loading, location.hash, products]);
 
   const handleProductAction = (product: Product) => {
     const identifier = product.sku ? `${product.name} (${product.sku})` : product.name;
@@ -70,11 +96,16 @@ const ProductsPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map(product => (
-              <ProductCard
+              <div
                 key={product.id}
-                product={product}
-                onQuoteClick={() => handleProductAction(product)}
-              />
+                id={`produto-${product.id}`}
+                className="scroll-mt-28 rounded-3xl transition-shadow"
+              >
+                <ProductCard
+                  product={product}
+                  onQuoteClick={() => handleProductAction(product)}
+                />
+              </div>
             ))}
           </div>
         )}

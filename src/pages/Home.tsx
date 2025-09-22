@@ -1,13 +1,16 @@
 import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, Star, MapPin, Phone, Package, Check } from "lucide-react";
-import GoogleMap from "@/components/GoogleMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import HeroCarousel from "@/components/HeroCarousel";
-import WeeklyOffers from "@/components/WeeklyOffers";
 import CategoryCarousel from "@/components/CategoryCarousel";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
-import MachineCarousel from "@/components/MachineCarousel";
+import { lazy, Suspense } from "react";
+
+// Lazy load heavy components that appear below the fold
+const WeeklyOffers = lazy(() => import("@/components/WeeklyOffers"));
+const MachineCarousel = lazy(() => import("@/components/MachineCarousel"));
+const GoogleMap = lazy(() => import("@/components/GoogleMap"));
 import Wave from "@/components/Wave";
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -191,7 +194,9 @@ export default function Home() {
       <CategoryCarousel categories={categories} />
 
       {/* Ofertas da Semana */}
-      <WeeklyOffers />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-secondary rounded-lg mx-auto max-w-7xl" />}>
+        <WeeklyOffers />
+      </Suspense>
 
       {/* Nossas soluções */}
       <section className="relative py-20 md:py-24 bg-gradient-premium text-white">
@@ -449,7 +454,9 @@ export default function Home() {
             </div>
             <div className="relative">
               <div className="bg-white rounded-2xl p-4 shadow-card">
-                <GoogleMap />
+                <Suspense fallback={<div className="h-64 animate-pulse bg-secondary rounded-lg flex items-center justify-center"><span className="text-muted-foreground">Carregando mapa...</span></div>}>
+                  <GoogleMap />
+                </Suspense>
               </div>
             </div>
           </div>

@@ -298,7 +298,7 @@ export default function Category() {
 
                         <Button
                           onClick={() => openWhatsApp({ item: product.name })}
-                          className="w-full mt-auto text-black hover:text-black"
+                          className="w-full mt-auto text-white hover:text-white"
                           variant="default"
                         >
                           <ShoppingCart className="w-4 h-4 mr-2" />

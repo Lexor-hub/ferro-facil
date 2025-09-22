@@ -67,7 +67,7 @@ export const ProductCard = ({ product, isOffer = false, onQuoteClick }: ProductC
           onClick={onQuoteClick}
           variant="hero"
           size="lg"
-          className="justify-between px-5 py-5 text-sm tracking-wide"
+          className="justify-between px-5 py-5 text-sm tracking-wide text-white"
         >
           Solicitar Orçamento
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
