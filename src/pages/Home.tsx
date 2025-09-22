@@ -2,10 +2,9 @@ import { ChevronDown, CheckCircle, Truck, Shield, Clock, Settings, ArrowRight, S
 import GoogleMap from "@/components/GoogleMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import HeroCarousel from "@/components/HeroCarousel";
 import WeeklyOffers from "@/components/WeeklyOffers";
-import BelowBannerImages from "@/components/BelowBannerImages";
+import CategoryCarousel from "@/components/CategoryCarousel";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Link } from "react-router-dom";
 import MachineCarousel from "@/components/MachineCarousel";
@@ -188,8 +187,8 @@ export default function Home() {
       {/* Hero Carousel */}
       <HeroCarousel />
 
-      {/* Imagens abaixo do banner */}
-      <BelowBannerImages />
+      {/* Categorias em destaque */}
+      <CategoryCarousel categories={categories} />
 
       {/* Ofertas da Semana */}
       <WeeklyOffers />
@@ -374,7 +373,10 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="card-gold-accent p-6 shadow-premium hover-lift">
+              <Card
+                key={index}
+                className="relative overflow-hidden rounded-2xl border-[1.5px] border-[#F2C94C]/80 bg-gradient-to-br from-white via-[#FFF6D8] to-[#FDE6B3] p-6 shadow-premium hover-lift"
+              >
                 <CardContent className="p-0">
                   <div className="flex items-center mb-4">
                     {[...Array(5)].map((_, i) => (
@@ -416,9 +418,16 @@ export default function Home() {
                     <div>DISTRITO INDUSTRIAL, Mairinque - SP, CEP 18120-000</div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-6 h-6 text-gradient-premium flex-shrink-0" />
-                  <span className="text-muted-foreground">(11) 99988-7766</span>
+                <div className="flex items-start space-x-3">
+                  <Phone className="w-6 h-6 text-gradient-premium flex-shrink-0 mt-1" />
+                  <div className="text-muted-foreground space-y-1">
+                    <div>
+                      <span className="font-semibold text-foreground">Telefone fixo:</span> (11) 2222-3303
+                    </div>
+                    <div>
+                      <span className="font-semibold text-foreground">Celular:</span> (11) 92085-5739
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">

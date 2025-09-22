@@ -142,33 +142,53 @@ export default function WeeklyOffers() {
         />
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-80 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 backdrop-blur-sm"></div>
-            ))}
-          </div>
+          <>
+            <div className="space-y-6 md:hidden">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-80 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 backdrop-blur-sm"></div>
+              ))}
+            </div>
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-80 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 backdrop-blur-sm"></div>
+              ))}
+            </div>
+          </>
         ) : (
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4">
+          <>
+            <div className="space-y-6 md:hidden">
               {products.map((product) => (
-                <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <ProductCard 
+                <div key={product.id}>
+                  <ProductCard
                     product={product}
                     isOffer={true}
                     onQuoteClick={() => handleProductWhatsApp(product)}
                   />
-                </CarouselItem>
+                </div>
               ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
-            <CarouselNext className="-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
-          </Carousel>
+            </div>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="hidden w-full md:block"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {products.map((product) => (
+                  <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                    <ProductCard 
+                      product={product}
+                      isOffer={true}
+                      onQuoteClick={() => handleProductWhatsApp(product)}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex md:-left-8 lg:-left-12 bg-white shadow-card hover:shadow-card-hover" />
+              <CarouselNext className="hidden md:flex md:-right-8 lg:-right-12 bg-white shadow-card hover:shadow-card-hover" />
+            </Carousel>
+          </>
         )}
 
         {/* CTA Final */}

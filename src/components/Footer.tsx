@@ -19,7 +19,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/80 text-sm mb-6">
-              Mais de 20 anos fornecendo soluções industriais com qualidade, 
+              Mais de 15 anos fornecendo soluções industriais com qualidade, 
               agilidade e atendimento personalizado para sua empresa.
             </p>
             <div className="flex items-center space-x-4">

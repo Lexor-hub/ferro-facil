@@ -67,8 +67,8 @@ export default function Company() {
     <div className="min-h-screen">
       {/* 1. Hero - Quem somos (H1 único) */}
       <HeroSection
-        title="Quem somos"
-        subtitle="A Loja Ferro & Aço é a operação de distribuição do Grupo Soares — extensão direta da Ferramentaria Soares trazendo toda a credibilidade e cuidado com nosso clientes. Com estrutura de ponta, estacionamento próprio e gratuito, e atendimento especializado, somos o parceiro ideal para sua empresa"
+        title="Mais do que fornecedor, um parceiro estratégico"
+        subtitle="A Loja Ferro & Aço nasceu para levar toda a credibilidade do Grupo Soares diretamente a você. Com atendimento consultivo, logística própria e um mix de produtos e marcas premium, transformamos necessidades industriais em soluções sob medida, do orçamento à entrega final."
         primaryCTA="Solicitar orçamento"
         secondaryCTA="Falar conosco"
         onSecondaryCTA={() => openWhatsApp({ context: "Gostaria de conhecer mais sobre o Grupo Soares" })}
