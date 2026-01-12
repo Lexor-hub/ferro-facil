@@ -1,8 +1,8 @@
-# Welcome to your Lovable project
+
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/dd9c6f1e-f301-4428-981d-50ab0e3c78df
+
 
 ## How can I edit this code?
 
@@ -18,9 +18,7 @@ Changes made via Lovable will be committed automatically to this repo.
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+The only requirement is having Node.js & npm installed - [install with 
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
